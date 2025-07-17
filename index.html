@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sohbet Uygulaması</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Kimsin? Profilini Seç ve Bağlan</h1>
+        <div class="profile-selection">
+            
+            <div class="profile-card" data-user-id="stannis" data-user-name="Stannis" data-profile-pic="stannis.jpg">
+                <img src="stannis.jpg" alt="Stannis Profil Resmi">
+                <h2>Stannis</h2>
+                <button class="connect-button">Odaya Bağlan</button>
+            </div>
+
+            <div class="profile-card" data-user-id="hope" data-user-name="Hope" data-profile-pic="hope.jpg">
+                <img src="hope.jpg" alt="Hope Profil Resmi">
+                <h2>Hope</h2>
+                <button class="connect-button">Odaya Bağlan</button>
+            </div>
+
+            <div class="profile-card" data-user-id="mecburiyetten" data-user-name="Mecburiyetten" data-profile-pic="mecburiyetten.jpg">
+                <img src="mecburiyetten.jpg" alt="Mecburiyetten Profil Resmi">
+                <h2>Mecburiyetten</h2>
+                <button class="connect-button">Odaya Bağlan</button>
+            </div>
+        </div>
+
+        <div class="chat-room" style="display: none;">
+            <h2 id="current-user-display"></h2> <div class="speaker-display">
+                <img id="speaking-profile-pic" src="" alt="Konuşan Kişi" style="display: none;">
+                <span id="speaking-user-name"></span>
+            </div>
+            <div class="controls">
+                <button id="mute-button">Mikrofon Kapat</button>
+            </div>
+            <div id="videos">
+                </div>
+        </div>
+    </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+    <script src="script.js"></script>
+</body>
+</html>
