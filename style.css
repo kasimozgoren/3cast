@@ -1,81 +1,146 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
-
-:root {
-    --primary-color: #6a0572; /* Mor tonları */
-    --secondary-color: #ab60ab; /* Açık mor */
-    --accent-color: #fca311; /* Turuncu vurgu */
-    --background-light: #f5f0f6;
-    --background-dark: #333;
-    --text-color: #333;
-    --white: #ffffff;
-    --shadow-light: rgba(0, 0, 0, 0.1);
-    --shadow-medium: rgba(0, 0, 0, 0.15);
-}
-
+/* Genel Ayarlar */
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #2c3e50; /* Koyu lacivert/antrasit arka plan */
+    color: #ecf0f1; /* Açık gri yazı rengi */
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    margin: 0;
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-    color: var(--text-color);
-    overflow: hidden; /* Taşmaları önler */
+    overflow: hidden; /* Taşmaları engelle */
 }
 
-.container {
-    background-color: var(--white);
-    padding: 40px;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px var(--shadow-medium);
-    text-align: center;
-    width: 90%;
-    max-width: 900px;
-    position: relative;
-    overflow: hidden;
-    animation: fadeIn 1s ease-out;
+/* Kapsayıcılar */
+.password-screen,
+.profile-selection,
+.chat-room {
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex; /* Varsayılanı flex yapıyoruz, JS ile display: none olacak */
+    flex-direction: column;
+    align-items: center;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
+/* Başlıklar */
 h1 {
-    color: var(--primary-color);
-    margin-bottom: 35px;
-    font-size: 2.5em;
+    color: #3498db; /* Canlı mavi başlık */
+    margin-bottom: 30px;
+    font-size: 2.8em;
     font-weight: 700;
-    text-shadow: 1px 1px 2px var(--shadow-light);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
 }
 
+h2 {
+    color: #f39c12; /* Turuncu vurgu */
+    margin-top: 20px;
+    margin-bottom: 15px;
+    font-size: 1.6em;
+    font-weight: 600;
+}
+
+/* Kartlar ve Genel Öğeler */
+.password-card,
+.profile-card {
+    background-color: #34495e; /* Daha koyu kart arka planı */
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    padding: 30px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Şifre Giriş Ekranı Stilleri */
+.password-screen {
+    justify-content: center;
+    align-items: center;
+}
+
+.password-card {
+    width: 100%;
+    max-width: 450px;
+    padding: 40px;
+}
+
+.password-card h2 {
+    color: #ecf0f1;
+    margin-bottom: 25px;
+    font-size: 2.2em;
+}
+
+.password-card input[type="password"] {
+    width: calc(100% - 20px);
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #555;
+    border-radius: 8px;
+    font-size: 1.1em;
+    background-color: #2c3e50; /* Koyu input arka planı */
+    color: #ecf0f1;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.password-card input[type="password"]::placeholder {
+    color: #bdc3c7; /* Açık gri placeholder */
+}
+
+.password-card input[type="password"]:focus {
+    border-color: #3498db;
+}
+
+.password-card button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 15px 30px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    width: 100%;
+}
+
+.password-card button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+.password-card button:active {
+    transform: translateY(0);
+}
+
+.error-message {
+    color: #e74c3c; /* Kırmızı hata mesajı */
+    margin-top: 15px;
+    font-size: 0.95em;
+    font-weight: 500;
+}
+
+/* Profil Seçim Ekranı */
 .profile-selection {
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-cards {
     display: flex;
-    justify-content: center; /* Ortalar */
     flex-wrap: wrap;
+    justify-content: center;
     gap: 30px;
-    margin-bottom: 50px;
 }
 
 .profile-card {
-    background-color: var(--background-light);
-    border-radius: 12px;
-    padding: 25px;
-    width: 220px;
-    box-shadow: 0 5px 15px var(--shadow-light);
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    width: 280px;
     cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border: 2px solid transparent; /* Varsayılan border */
 }
 
 .profile-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 8px 25px var(--shadow-medium);
-    border-color: var(--primary-color); /* Hover'da border rengi */
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
 }
 
 .profile-card img {
@@ -83,142 +148,235 @@ h1 {
     height: 120px;
     border-radius: 50%;
     object-fit: cover;
-    margin-bottom: 20px;
-    border: 4px solid var(--accent-color); /* Vurgulu çerçeve */
-    box-shadow: 0 2px 8px var(--shadow-light);
+    margin-bottom: 15px;
+    border: 4px solid #3498db; /* Mavi çerçeve */
 }
 
-.profile-card h2 {
-    color: var(--primary-color);
+.profile-card h3 {
+    color: #ecf0f1;
     margin-top: 0;
     margin-bottom: 20px;
-    font-size: 1.8em;
-    font-weight: 600;
+    font-size: 1.5em;
 }
 
-.connect-button {
-    background-color: var(--primary-color);
-    color: var(--white);
+.profile-card .connect-button {
+    background-color: #27ae60; /* Yeşil düğme */
+    color: white;
     border: none;
-    padding: 12px 28px;
     border-radius: 8px;
-    cursor: pointer;
+    padding: 12px 25px;
     font-size: 1.1em;
-    font-weight: 600;
-    transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
-    box-shadow: 0 3px 10px var(--shadow-light);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-.connect-button:hover {
-    background-color: var(--secondary-color);
-    transform: translateY(-2px);
+.profile-card .connect-button:hover {
+    background-color: #219654;
 }
 
-/* Sohbet Odası Stilleri */
+/* Sohbet Odası Ekranı */
 .chat-room {
-    border-top: 1px solid #eee;
-    padding-top: 40px;
-    margin-top: 30px;
-    animation: slideInUp 0.8s ease-out forwards; /* Görüşme ekranı için animasyon */
-    display: flex; /* Flexbox kullanımı */
-    flex-direction: column;
-    align-items: center;
-}
-
-@keyframes slideInUp {
-    from { opacity: 0; transform: translateY(50px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.chat-room h2#current-user-display {
-    color: var(--primary-color);
-    margin-bottom: 25px;
-    font-size: 2em;
-    font-weight: 700;
-}
-
-.speaker-display {
     display: flex;
-    flex-direction: column; /* Alt alta hizalama */
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 30px;
-    min-height: 150px; /* Konuşan kişi alanı için yeterli yükseklik */
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    height: 95vh; /* Yüksekliği ekranın %95'i yapalım */
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #222; /* Koyu gri sohbet odası arkaplanı */
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
 }
 
-#speaking-profile-pic {
-    width: 100px;
-    height: 100px;
+.header {
+    background-color: #1a1a1a; /* Daha koyu başlık arka planı */
+    padding: 20px 30px;
+    border-bottom: 1px solid #333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 2em;
+    color: #ecf0f1;
+}
+
+.action-buttons button {
+    background-color: #f39c12; /* Turuncu düğme */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    margin-left: 15px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.action-buttons button:hover {
+    background-color: #e67e22;
+}
+
+.action-buttons button.unmuted {
+    background-color: #27ae60; /* Yeşil mikrofon açık */
+}
+.action-buttons button.unmuted:hover {
+    background-color: #219654;
+}
+.action-buttons button.disconnect {
+    background-color: #e74c3c; /* Kırmızı ayrıl butonu */
+}
+.action-buttons button.disconnect:hover {
+    background-color: #c0392b;
+}
+
+.main-content {
+    display: flex;
+    flex: 1; /* Kalan alanı doldur */
+    padding: 20px;
+    gap: 20px;
+    /* Önceki row-reverse kaldırıldı, HTML sırası belirleyici */
+}
+
+.left-panel,
+.right-panel {
+    background-color: #2c3e50; /* Koyu lacivert/antrasit panel arka planı */
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+    overflow-y: auto; /* İçerik taşarsa kaydırma çubuğu */
+}
+
+/* !!!!!!!! YENİ KISIM !!!!!!!! */
+.left-panel {
+    flex: 2; /* Konuşan Kişi paneli, Ses Akışları panelinin 2 katı kadar yer kaplasın */
+    display: flex;
+    flex-direction: column;
+}
+
+.right-panel {
+    flex: 1; /* Ses Akışları paneli daha az yer kaplasın */
+    display: flex;
+    flex-direction: column;
+}
+/* !!!!!!!! YENİ KISIM SONU !!!!!!!! */
+
+.left-panel h2,
+.right-panel h2 {
+    color: #f39c12; /* Turuncu vurgu */
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #4a6c89; /* Bölücü çizgi */
+}
+
+.speaking-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Ortala */
+    flex-direction: column; /* Alt alta sırala */
+    margin-bottom: 25px;
+    min-height: 150px; /* Yeterli boşluk bırak */
+    background-color: #34495e; /* Konuşan kişi arka planı */
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.speaking-indicator img {
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
     object-fit: cover;
-    border: 5px solid var(--accent-color); /* Konuşan kişiyi vurgulamak için turuncu çerçeve */
-    box-shadow: 0 0 15px var(--accent-color); /* Parlama efekti */
-    margin-bottom: 15px;
-    transition: all 0.3s ease-in-out;
+    border: 3px solid #3498db; /* Mavi vurgu çerçevesi */
+    margin-bottom: 10px;
 }
 
-#speaking-profile-pic:not([src=""]) { /* Resim görünür olduğunda animasyon */
-    animation: pulseBorder 1.5s infinite alternate;
+.speaking-indicator span {
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #ecf0f1;
 }
 
-@keyframes pulseBorder {
-    from { border-color: var(--accent-color); box-shadow: 0 0 10px var(--accent-color); }
-    to { border-color: var(--primary-color); box-shadow: 0 0 25px var(--primary-color); }
-}
-
-
-#speaking-user-name {
-    font-size: 2.2em;
-    font-weight: 700;
-    color: var(--primary-color);
-    text-shadow: 1px 1px 3px var(--shadow-light);
-}
-
-.controls {
-    margin-top: 25px;
-    margin-bottom: 30px;
-}
-
-#mute-button {
-    background-color: #dc3545; /* Kırmızı renk */
-    color: var(--white);
-    border: none;
-    padding: 15px 30px;
-    border-radius: 50px; /* Yuvarlak köşeler */
-    cursor: pointer;
-    font-size: 1.2em;
-    font-weight: 600;
-    transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-#mute-button:hover {
-    background-color: #c82333;
-    transform: translateY(-2px);
-}
-
-#mute-button.unmuted { /* Mikrofon açıkken farklı renk */
-    background-color: #28a745; /* Yeşil renk */
-}
-#mute-button.unmuted:hover {
-    background-color: #218838;
-}
-
-
-#videos {
-    margin-top: 30px;
+.users-list {
     display: flex;
-    justify-content: center;
-    gap: 25px;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
 }
 
-video {
-    width: 280px; /* Her bir video/ses akışı için boyut */
-    height: 200px;
-    background-color: var(--background-dark); /* Koyu arka plan */
-    border-radius: 12px;
+.user-item {
+    display: flex;
+    align-items: center;
+    background-color: #34495e; /* Kullanıcı öğesi arka planı */
+    padding: 10px 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.user-item img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
     object-fit: cover;
-    border: 3px solid var(--secondary-color);
-    box-shadow: 0 5px 15px var(--shadow-medium);
+    margin-right: 15px;
+    border: 2px solid #555;
+}
+
+.user-item span {
+    font-size: 1.1em;
+    font-weight: 500;
+    color: #ecf0f1;
+}
+
+.videos-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    align-content: flex-start; /* Elemanları yukarıdan hizala */
+    flex: 1; /* Kalan alanı doldur */
+    padding-top: 15px;
+}
+
+.videos-container audio {
+    width: 100px; /* Ses için küçük boyut */
+    height: 30px;
+    background-color: #4a6c89; /* Ses oynatıcı arka planı */
+    border-radius: 5px;
+    /* Eğer video eklenirse daha büyük boyutlar gerekebilir */
+    display: none; /* Ses akışlarını gizli tutalım */
+}
+
+/* Duyarlı Tasarım */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    h1 {
+        font-size: 2em;
+    }
+    .profile-cards {
+        flex-direction: column;
+        align-items: center;
+    }
+    .profile-card {
+        width: 90%;
+        max-width: 300px;
+    }
+    .chat-room {
+        height: auto;
+        min-height: 90vh;
+    }
+    .main-content {
+        flex-direction: column;
+        /* column-reverse kaldırılarak, mobil görünümde de Konuşan Kişi üstte kalır */
+    }
+    .left-panel,
+    .right-panel {
+        width: 100%;
+        flex: none; /* Mobil cihazlarda esnekliği kapat, tam genişlik ver */
+    }
 }

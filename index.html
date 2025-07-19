@@ -3,50 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sohbet Uygulaması</title>
+    <title>Sohbet Odası</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Kimsin? Profilini Seç ve Bağlan</h1>
-        <div class="profile-selection">
-            
-            <div class="profile-card" data-user-id="stannis" data-user-name="Stannis" data-profile-pic="stannis.jpg">
-                <img src="stannis.jpg" alt="Stannis Profil Resmi">
-                <h2>Stannis</h2>
-                <button class="connect-button">Odaya Bağlan</button>
-            </div>
 
-            <div class="profile-card" data-user-id="hope" data-user-name="Hope" data-profile-pic="hope.jpg">
-                <img src="hope.jpg" alt="Hope Profil Resmi">
-                <h2>Hope</h2>
-                <button class="connect-button">Odaya Bağlan</button>
-            </div>
-
-            <div class="profile-card" data-user-id="mecburiyetten" data-user-name="Mecburiyetten" data-profile-pic="mecburiyetten.jpg">
-                <img src="mecburiyetten.jpg" alt="Mecburiyetten Profil Resmi">
-                <h2>Mecburiyetten</h2>
-                <button class="connect-button">Odaya Bağlan</button>
-            </div>
-        </div>
-
-        <div class="chat-room" style="display: none;">
-            <h2 id="current-user-display"></h2> <div class="speaker-display">
-                <img id="speaking-profile-pic" src="" alt="Konuşan Kişi" style="display: none;">
-                <span id="speaking-user-name"></span>
-            </div>
-            <div class="controls">
-                <button id="mute-button">Mikrofon Kapat</button>
-            </div>
-            <div id="videos">
-                </div>
+    <div class="password-screen">
+        <div class="password-card">
+            <h2>Giriş İçin Şifre Girin</h2>
+            <input type="password" id="password-input" placeholder="Şifreyi Girin">
+            <button id="password-submit-button">Giriş Yap</button>
+            <p id="password-error-message" class="error-message"></p>
         </div>
     </div>
 
-  <script src="/socket.io/socket.io.js"></script>
-    <script src="script.js"></script>
-</body>
-</html>
+    <div class="profile-selection" style="display: none;">
+        <h1>Bir Profil Seç</h1>
+        <div class="profile-cards">
+            <div class="profile-card" data-user-id="user1" data-user-name="Stannis" data-profile-pic="images/stannis.jpg">
+                <img src="images/stannis.jpg" alt="Stannis Profil Resmi">
+                <h3>Stannis</h3>
+                <button class="connect-button">Odaya Bağlan</button>
+            </div>
+            <div class="profile-card" data-user-id="user2" data-user-name="Hope" data-profile-pic="images/hope.jpg">
+                <img src="images/hope.jpg" alt="Hope Profil Resmi">
+                <h3>Hope</h3>
+                <button class="connect-button">Odaya Bağlan</button>
+            </div>
+            <div class="profile-card" data-user-id="user3" data-user-name="Mecburietten" data-profile-pic="images/mecburietten.jpg">
+                <img src="images/mecburietten.jpg" alt="Mecburietten Profil Resmi">
+                <h3>Mecburietten</h3>
+                <button class="connect-button">Odaya Bağlan</button>
+            </div>
+            <div class="profile-card" data-user-id="guest" data-user-name="Konuk" data-profile-pic="images/default_guest.jpg">
+                <img src="images/default_guest.jpg" alt="Konuk Profil Resmi">
+                <h3>Konuk</h3>
+                <button class="connect-button">Odaya Bağlan</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-room" style="display: none;">
+        <div class="header">
+            <h1 id="current-user-display">Hoş Geldin!</h1>
+            <div class="action-buttons">
+                <button id="mute-button" class="unmuted">Mikrofon Kapat</button>
+                <button id="disconnect-button" class="disconnect">Odadan Ayrıl</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="left-panel">
+                <h2>Konuşan Kişi</h2>
+                <div class="speaking-indicator">
+                    <img id="speaking-profile-pic" src="" alt="Konuşan Profil Resmi" style="display: none;">
+                    <span id="speaking-user-name"></span>
+                </div>
+
+                <h2>Odada Bulunanlar</h2>
+                <div id="users-in-room" class="users-list">
+                    </div>
+            </div>
+
+            <div class="right-panel">
+                <h2>Ses Akışları</h2>
+                <div id="videos" class="videos-container">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
