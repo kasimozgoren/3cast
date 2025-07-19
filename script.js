@@ -1,5 +1,5 @@
 // Socket.IO sunucusuna bağlanıyoruz
-const socket = io('http://localhost:3000'); 
+const socket = io(); 
 
 // HTML elemanlarını seçiyoruz
 const passwordScreen = document.querySelector('.password-screen');
