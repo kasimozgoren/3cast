@@ -9,7 +9,8 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh; /* Ekranın tamamını kapla */
-    overflow: hidden; /* Taşmaları engelle */
+    overflow-y: auto; /* Dikey kaydırmayı her zaman etkinleştir */
+    overflow-x: hidden; /* Yatay kaydırmayı engelle */
 }
 
 /* Kapsayıcılar */
@@ -23,6 +24,9 @@ body {
     display: flex; /* Varsayılanı flex yapıyoruz, JS ile display: none olacak */
     flex-direction: column;
     align-items: center;
+    /* Ekranın tamamını kaplaması için aşağıdaki satırlar eklendi/güncellendi */
+    min-height: 100vh; /* Her ekranın kendi minimum yüksekliği olsun */
+    justify-content: center; /* İçeriği dikeyde ortala */
 }
 
 /* Başlıklar */
@@ -62,7 +66,6 @@ h2 {
 }
 
 .auth-logo {
-    /* Buradaki değişiklikler önemli! Logonun her zaman belirli bir max genişlikte ve oranında kalmasını sağlar. */
     max-width: 180px; /* Logonun maksimum genişliği */
     height: auto; /* Oranını koruyarak yüksekliği otomatik ayarla */
     margin-bottom: 25px; /* Altında boşluk bırak */
@@ -74,8 +77,7 @@ h2 {
 
 /* Şifre Giriş Ekranı Stilleri */
 .password-screen {
-    justify-content: center;
-    align-items: center;
+    /* justify-content ve align-items zaten yukarıdaki .password-screen'de ayarlı, tekrara gerek yok. */
 }
 
 .password-card {
@@ -141,11 +143,13 @@ h2 {
 
 /* Profil Seçim Ekranı */
 .profile-selection {
-    justify-content: center;
-    align-items: flex-start; /* Öğeleri yukarı yasla */
+    /* justify-content: center; (Zaten üst kapsayıcıda var) */
+    /* align-items: flex-start; (Bu kaldırıldı, flex-start ile alt kart yukarı gelmezdi) */
     padding-top: 50px; /* Üstten biraz boşluk bırak */
-    min-height: 80vh; /* Minimum yükseklik ver */
-    overflow-y: auto; /* Taşma olursa kaydırılabilir yap */
+    padding-bottom: 50px; /* Alttan da boşluk bırak */
+    min-height: 100vh; /* Tam ekran yüksekliğini koru */
+    overflow-y: auto; /* İçerik taşarsa kaydırma çubuğu çıksın */
+    align-items: center; /* Ortalamayı tekrar sağlamak için */
 }
 
 .profile-cards {
@@ -492,8 +496,9 @@ h2 {
 @media (max-width: 768px) {
     body {
         padding: 10px;
-        height: 100vh; /* Mobil cihazlarda sanal klavyenin scroll olayını tetiklemesini engelle */
-        overflow: hidden;
+        height: auto; /* Mobil cihazlarda sanal klavyenin scroll olayını tetiklemesini engelle */
+        overflow-y: auto; /* Mobil için dikey kaydırmayı etkinleştir */
+        overflow-x: hidden;
     }
     h1 {
         font-size: 2em;
@@ -501,6 +506,7 @@ h2 {
     .profile-selection {
         padding-top: 20px; /* Mobil için daha az üst boşluk */
         min-height: auto; /* Mobil için otomatik yükseklik */
+        padding-bottom: 20px; /* Mobil için alt boşluk */
     }
     .profile-cards {
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Mobil için daha küçük kartlar */
