@@ -1,35 +1,37 @@
 // Socket.IO sunucusuna bağlanıyoruz
 const socket = io(); // Render için dinamik bağlantı
 
-// HTML elemanlarını seçiyoruz
+// HTML elemanlarını seçiyoruz (ID DÜZELTMELERİ BURADA YAPILDI)
 const passwordScreen = document.querySelector('.password-screen');
-const passwordInput = document.getElementById('password-input');
-const passwordSubmitButton = document.getElementById('password-submit-button');
-const passwordErrorMessage = document.getElementById('password-error-message');
+const passwordInput = document.getElementById('passwordInput'); // Düzeltme: password-input -> passwordInput
+const passwordSubmitButton = document.getElementById('passwordSubmitButton'); // Düzeltme: password-submit-button -> passwordSubmitButton
+const passwordErrorMessage = document.getElementById('passwordErrorMessage'); // Düzeltme: password-error-message -> passwordErrorMessage
 
-const profileSelectionDiv = document.querySelector('.profile-selection');
-const chatRoomDiv = document.querySelector('.chat-room');
-const connectButtons = document.querySelectorAll('.connect-button');
-const currentUserDisplay = document.getElementById('current-user-display');
-const speakingProfilePic = document.getElementById('speaking-profile-pic');
-const speakingUserName = document.getElementById('speaking-user-name');
-const muteButton = document.getElementById('mute-button');
-const disconnectButton = document.getElementById('disconnect-button');
+const profileSelectionScreen = document.getElementById('profileSelectionScreen'); // Düzeltme: profileSelectionDiv -> profileSelectionScreen
+const chatRoomScreen = document.getElementById('chatRoomScreen'); // Düzeltme: chatRoomDiv -> chatRoomScreen
+const profileCardsContainer = document.getElementById('profileCards'); // Yeni: Profil kartlarını tutan ana div
+const welcomeUserName = document.getElementById('welcomeUserName'); // Yeni: Hoş geldin metnindeki kullanıcı adı alanı
+
+const speakingProfilePic = document.getElementById('speakingProfilePic'); // Düzeltme: speaking-profile-pic -> speakingProfilePic
+const speakingUserName = document.getElementById('speakingUserName'); // Düzeltme: speaking-user-name -> speakingUserName
+const toggleMuteButton = document.getElementById('toggleMuteButton'); // Düzeltme: muteButton -> toggleMuteButton
+const leaveRoomButton = document.getElementById('leaveRoomButton'); // Düzeltme: disconnectButton -> leaveRoomButton
+
 // Sohbet elementleri
-const chatMessagesDiv = document.getElementById('chat-messages');
-const chatInput = document.getElementById('chat-input');
-const sendMessageButton = document.getElementById('send-message-button');
+const chatMessagesDiv = document.getElementById('chatMessagesDiv'); // Düzeltme: chat-messages -> chatMessagesDiv
+const chatInput = document.getElementById('chatInput'); // Düzeltme: chat-input -> chatInput
+const sendMessageButton = document.getElementById('sendMessageButton'); // Düzeltme: send-message-button -> sendMessageButton
 const videosContainer = document.getElementById('videos-container'); // Ses akışları için container (gizli)
 
-const usersInRoomList = document.getElementById('users-in-room');
+const usersList = document.getElementById('usersList'); // Düzeltme: usersInRoomList -> usersList (HTML ile uyumlu)
 
 // Mevcut kullanıcı bilgilerini tutacak değişken
-let currentUser = null; 
+let currentUser = null;
 
 // WebRTC ile ilgili değişkenler
-const peerConnections = {}; 
-let localStream; 
-let isMuted = false; 
+const peerConnections = {};
+let localStream;
+let isMuted = false;
 
 // STUN sunucuları
 const iceServers = {
@@ -52,8 +54,9 @@ passwordSubmitButton.addEventListener('click', () => {
     const enteredPassword = passwordInput.value;
     if (enteredPassword === CORRECT_PASSWORD) {
         passwordScreen.style.display = 'none';
-        profileSelectionDiv.style.display = 'flex';
+        profileSelectionScreen.style.display = 'flex'; // Düzeltme: profileSelectionDiv -> profileSelectionScreen
         passwordErrorMessage.textContent = '';
+        loadProfiles(); // Profil kartlarını yükle
     } else {
         passwordErrorMessage.textContent = 'Yanlış şifre! Lütfen tekrar deneyin.';
         passwordInput.value = '';
@@ -68,57 +71,95 @@ passwordInput.addEventListener('keypress', (event) => {
 });
 
 // -----------------------------------------------------------------------------
-// Kullanıcı Arayüzü (UI) İşlevleri
+// Kullanıcı Profilleri ve Seçimi
 // -----------------------------------------------------------------------------
 
-connectButtons.forEach(button => {
-    button.addEventListener('click', async (event) => {
-        const profileCard = event.target.closest('.profile-card'); 
-        
-        currentUser = {
-            id: profileCard.dataset.userId,
-            name: profileCard.dataset.userName,
-            pic: profileCard.dataset.profilePic
-        };
+// Örnek profiller (sunucudan gelecek profillerin yerine geçici)
+const PROFILES = [
+    { id: 'stannis', name: 'Stannis', pic: 'images/stannis.jpg' },
+    { id: 'hope', name: 'Hope', pic: 'images/hope.jpg' },
+    { id: 'mecburiyetten', name: 'Mecburiyetten', pic: 'images/mecburiyetten.jpg' },
+    { id: 'default', name: 'Misafir', pic: 'images/default.jpg' } // Yeni varsayılan profil
+];
 
-        currentUserDisplay.textContent = `Hoş Geldin, ${currentUser.name}!`;
+function loadProfiles() {
+    profileCardsContainer.innerHTML = ''; // Önceki kartları temizle
+    PROFILES.forEach(profile => {
+        const profileCard = document.createElement('div');
+        profileCard.classList.add('profile-card');
+        profileCard.dataset.userId = profile.id; // data-user-id
+        profileCard.dataset.userName = profile.name; // data-user-name
+        profileCard.dataset.profilePic = profile.pic; // data-profile-pic (resim yolu)
 
-        profileSelectionDiv.style.display = 'none';
-        chatRoomDiv.style.display = 'flex'; 
-
-        console.log(`${currentUser.name} profili seçildi ve odaya bağlanılıyor...`);
-        
-        try {
-            // Mikrofon akışını başlat ve gürültü engelleme/iyileştirme özelliklerini etkinleştir
-            localStream = await navigator.mediaDevices.getUserMedia({ 
-                audio: {
-                    echoCancellation: true,      // Yankı giderme
-                    noiseSuppression: true,      // Gürültü engelleme
-                    autoGainControl: true        // Otomatik ses seviyesi kontrolü
-                }, 
-                video: false 
-            });
-            
-            // Mikrofon durumunu güncelle
-            isMuted = false;
-            updateMuteButton();
-
-            // Sunucuya odaya katıldığını bildir
-            socket.emit('joinRoom', currentUser); 
-
-            // Kendi sesini sürekli dinle ve konuşma algıla
-            setupLocalAudioAnalysis();
-
-        } catch (error) {
-            console.error('Mikrofon erişimi reddedildi veya bir hata oluştu:', error);
-            alert('Mikrofon erişimi izni vermeniz gerekiyor! Sesli iletişim ve konuşma tespiti çalışmayabilir.');
-            // Mikrofon erişimi olmasa bile odaya katılmaya devam et (ancak sesli iletişim olmaz)
-            socket.emit('joinRoom', currentUser); 
-        }
+        profileCard.innerHTML = `
+            <img src="${profile.pic}" alt="${profile.name} Profil Resmi">
+            <h3>${profile.name}</h3>
+            <button class="connect-button">Odaya Bağlan</button>
+        `;
+        profileCardsContainer.appendChild(profileCard);
     });
+
+    // Profil kartları yüklendikten sonra event listener'ları ekle
+    document.querySelectorAll('.profile-card .connect-button').forEach(button => {
+        button.addEventListener('click', async (event) => {
+            const profileCard = event.target.closest('.profile-card');
+            currentUser = {
+                id: profileCard.dataset.userId,
+                name: profileCard.dataset.userName,
+                pic: profileCard.dataset.profilePic
+            };
+
+            welcomeUserName.textContent = currentUser.name; // Hoş geldin metnini güncelle
+
+            profileSelectionScreen.style.display = 'none';
+            chatRoomScreen.style.display = 'flex';
+
+            console.log(`${currentUser.name} profili seçildi ve odaya bağlanılıyor...`);
+
+            try {
+                // Mikrofon akışını başlat ve gürültü engelleme/iyileştirme özelliklerini etkinleştir
+                localStream = await navigator.mediaDevices.getUserMedia({
+                    audio: {
+                        echoCancellation: true,      // Yankı giderme
+                        noiseSuppression: true,      // Gürültü engelleme
+                        autoGainControl: true        // Otomatik ses seviyesi kontrolü
+                    },
+                    video: false
+                });
+
+                // Mikrofon durumunu güncelle
+                isMuted = false;
+                updateMuteButton();
+
+                // Sunucuya odaya katıldığını bildir
+                socket.emit('joinRoom', currentUser);
+
+                // Kendi sesini sürekli dinle ve konuşma algıla
+                setupLocalAudioAnalysis();
+
+            } catch (error) {
+                console.error('Mikrofon erişimi reddedildi veya bir hata oluştu:', error);
+                alert('Mikrofon erişimi izni vermeniz gerekiyor! Sesli iletişim ve konuşma tespiti çalışmayabilir.');
+                // Mikrofon erişimi olmasa bile odaya katılmaya devam et (ancak sesli iletişim olmaz)
+                socket.emit('joinRoom', currentUser);
+            }
+        });
+    });
+}
+
+// Uygulama yüklendiğinde profilleri yükle
+document.addEventListener('DOMContentLoaded', () => {
+    // Uygulama ilk yüklendiğinde sadece şifre ekranını göster
+    passwordScreen.style.display = 'flex';
+    profileSelectionScreen.style.display = 'none';
+    chatRoomScreen.style.display = 'none';
 });
 
-muteButton.addEventListener('click', () => {
+// -----------------------------------------------------------------------------
+// Kullanıcı Arayüzü (UI) İşlevleri - Genel
+// -----------------------------------------------------------------------------
+
+toggleMuteButton.addEventListener('click', () => { // Düzeltme: muteButton -> toggleMuteButton
     if (localStream) {
         localStream.getAudioTracks().forEach(track => {
             track.enabled = !track.enabled;
@@ -130,7 +171,7 @@ muteButton.addEventListener('click', () => {
     }
 });
 
-disconnectButton.addEventListener('click', () => {
+leaveRoomButton.addEventListener('click', () => { // Düzeltme: disconnectButton -> leaveRoomButton
     // WebRTC peer bağlantılarını kapat
     for (const peerId in peerConnections) {
         if (peerConnections[peerId]) {
@@ -146,68 +187,68 @@ disconnectButton.addEventListener('click', () => {
     socket.disconnect(); // Socket.IO bağlantısını kes
 
     // Arayüzü sıfırla
-    chatRoomDiv.style.display = 'none';
-    profileSelectionDiv.style.display = 'none';
+    chatRoomScreen.style.display = 'none';
+    profileSelectionScreen.style.display = 'none';
     passwordScreen.style.display = 'flex';
 
     chatMessagesDiv.innerHTML = ''; // Sohbet mesajlarını temizle
-    usersInRoomList.innerHTML = '';
+    usersList.innerHTML = ''; // Düzeltme: usersInRoomList -> usersList
     speakingProfilePic.style.display = 'none';
-    speakingUserName.textContent = '';
+    speakingUserName.textContent = 'Kimse Konuşmuyor'; // Varsayılan metni ayarla
     videosContainer.innerHTML = ''; // Remote sesleri temizle
 
     console.log("Odadan ayrıldı ve bağlantı kesildi.");
     // Sayfayı tamamen yeniden yükleyerek tüm durumu sıfırlayabiliriz
-    location.reload(); 
+    // location.reload(); // Sayfayı yeniden yüklemek yerine sadece Socket bağlantısını kesmek daha iyi
 });
 
 
 function updateMuteButton() {
     if (isMuted) {
-        muteButton.textContent = 'Mikrofon Aç';
-        muteButton.classList.remove('unmuted');
+        toggleMuteButton.textContent = 'Mikrofon Aç';
+        toggleMuteButton.classList.remove('unmuted');
     } else {
-        muteButton.textContent = 'Mikrofon Kapat';
-        muteButton.classList.add('unmuted');
+        toggleMuteButton.textContent = 'Mikrofon Kapat';
+        toggleMuteButton.classList.add('unmuted');
     }
 }
 
 let speakingTimeout;
 function showSpeakingUser(userId, userName, userPic) {
     // Konuk profili veya olmayan resimler için varsayılan resim
-    const displayPic = userPic && userPic !== 'images/default_guest.jpg' ? userPic : 'images/default_guest.jpg'; 
+    const displayPic = userPic || 'images/default.jpg'; // Düzeltme: default_guest.jpg -> default.jpg
 
     speakingProfilePic.src = displayPic;
     speakingProfilePic.alt = `${userName} Profil Resmi`;
     speakingProfilePic.style.display = 'block';
-    
+
     // KENDİ KONUŞMASINI GÖSTERME DÜZELTMESİ BURADA
     if (userId === socket.id) {
         speakingUserName.textContent = 'Sen Konuşuyorsun';
     } else {
         speakingUserName.textContent = userName;
     }
-    
+
     clearTimeout(speakingTimeout);
     speakingTimeout = setTimeout(() => {
         speakingProfilePic.style.display = 'none';
-        speakingUserName.textContent = '';
+        speakingUserName.textContent = 'Kimse Konuşmuyor'; // Konuşma durunca varsayılan metin
     }, 1500);
 }
 
 function updateUsersInRoom(users) {
-    usersInRoomList.innerHTML = '';
+    usersList.innerHTML = ''; // Düzeltme: usersInRoomList -> usersList
     users.forEach(user => {
-        if (user.id) { 
+        if (user.id) {
             const userItem = document.createElement('div');
             userItem.classList.add('user-item');
             // Konuk profili için özel resim yolu veya varsayılan resim
-            const userPicPath = user.pic && user.pic !== 'images/default_guest.jpg' ? user.pic : 'images/default_guest.jpg';
+            const userPicPath = user.pic || 'images/default.jpg'; // Düzeltme: default_guest.jpg -> default.jpg
             userItem.innerHTML = `
                 <img src="${userPicPath}" alt="${user.name} Profil Resmi">
                 <span>${user.name} ${user.id === socket.id ? '(Sen)' : ''}</span>
             `;
-            usersInRoomList.appendChild(userItem);
+            usersList.appendChild(userItem); // Düzeltme: usersInRoomList -> usersList
         }
     });
 }
@@ -255,12 +296,12 @@ function createPeerConnection(peerId) {
     pc.onnegotiationneeded = async () => {
         try {
             // Sadece offer'ı başlatan taraf negotiationneeded'ı kullanır
-            if (peerId !== socket.id) { // Başkalarına offer gönder
-                const offer = await pc.createOffer();
-                await pc.setLocalDescription(offer);
-                socket.emit('offer', peerId, pc.localDescription);
-                console.log(`Offer gönderildi ${peerId} için`);
-            }
+            // Bu kısım genellikle yeni bir kullanıcı odaya katıldığında veya mevcut bir kullanıcıya offer gönderilmesi gerektiğinde tetiklenir
+            const offer = await pc.createOffer();
+            await pc.setLocalDescription(offer);
+            socket.emit('offer', peerId, pc.localDescription);
+            console.log(`Offer gönderildi ${peerId} için`);
+
         } catch (err) {
             console.error('Offer oluşturulurken hata:', err);
         }
@@ -354,7 +395,7 @@ function displayMessage(message) {
     }
 
     // Konuşan kişinin profil resmi için varsayılan guest resmi
-    const displayPic = message.senderPic && message.senderPic !== 'images/default_guest.jpg' ? message.senderPic : 'images/default_guest.jpg';
+    const displayPic = message.senderPic || 'images/default.jpg'; // Düzeltme: default_guest.jpg -> default.jpg
 
     messageElement.innerHTML = `
         <span class="sender-name">${message.senderName} <span style="font-weight: normal; font-size: 0.8em; color: #bdc3c7;">(${message.timestamp})</span></span>
@@ -382,7 +423,7 @@ socket.on('connect', () => {
 
 socket.on('userJoined', (newSocketId, userData) => {
     console.log(`${userData.name} (${newSocketId}) odaya katıldı.`);
-    
+
     // Odaya katılım mesajını chat'e de ekleyebiliriz
     if (newSocketId !== socket.id) { // Kendi katılım mesajımızı tekrar etme
         displayMessage({
@@ -402,7 +443,7 @@ socket.on('userJoined', (newSocketId, userData) => {
 
 socket.on('userLeft', (socketId, userName) => {
     console.log(`Kullanıcı (${socketId}) odadan ayrıldı.`);
-    
+
     // Odadan ayrılma mesajını chat'e de ekleyebiliriz
     displayMessage({
         senderId: 'system',
@@ -419,10 +460,10 @@ socket.on('userLeft', (socketId, userName) => {
     removeRemoteAudio(socketId); // Uzak ses elementini kaldır
 
     // Konuşan kişi ayrılırsa ekranı temizle
-    if (speakingProfilePic.style.display === 'block' && 
+    if (speakingProfilePic.style.display === 'block' &&
         (speakingUserName.textContent.includes(socketId) || speakingUserName.textContent === 'Sen Konuşuyorsun')) {
         speakingProfilePic.style.display = 'none';
-        speakingUserName.textContent = '';
+        speakingUserName.textContent = 'Kimse Konuşmuyor'; // Varsayılan metin
     }
 });
 
@@ -461,7 +502,7 @@ socket.on('candidate', async (senderId, candidate) => {
     }
 });
 
-socket.usersInRoom = []; 
+socket.usersInRoom = [];
 
 socket.on('roomUpdate', (users) => {
     console.log('Oda güncellendi. Yeni kullanıcılar:', users);
