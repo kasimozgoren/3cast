@@ -36,25 +36,35 @@ io.on('connection', (socket) => {
         // Odadaki güncel kullanıcı listesini al ve gönder
         updateRoomUsers(roomName);
 
-        // WebRTC teklif (offer) ve cevap (answer) alışverişi
-        socket.on('offer', (id, message) => {
-            console.log(`Offer from ${socket.id} to ${id}`);
-            socket.to(id).emit('offer', socket.id, message);
+        // WebRTC sinyalizasyon mesajları (GERİ GETİRİLDİ)
+        socket.on('offer', (targetId, description) => {
+            console.log(`Offer alındı ${socket.id}'den ${targetId} için`);
+            socket.to(targetId).emit('offer', socket.id, description);
         });
 
-        socket.on('answer', (id, message) => {
-            console.log(`Answer from ${socket.id} to ${id}`);
-            socket.to(id).emit('answer', socket.id, message);
+        socket.on('answer', (targetId, description) => {
+            console.log(`Answer alındı ${socket.id}'den ${targetId} için`);
+            socket.to(targetId).emit('answer', socket.id, description);
         });
 
-        socket.on('candidate', (id, message) => {
-            console.log(`Candidate from ${socket.id} to ${id}`);
-            socket.to(id).emit('candidate', socket.id, message);
+        socket.on('candidate', (targetId, candidate) => {
+            console.log(`Candidate alındı ${socket.id}'den ${targetId} için`);
+            socket.to(targetId).emit('candidate', socket.id, candidate);
         });
 
         // Mikrofon sessize alma/açma durumu değiştiğinde
         socket.on('toggleMute', (isMutedStatus) => {
             io.to(roomName).emit('toggleMute', socket.id, isMutedStatus);
+        });
+
+        // Konuşan kişinin bilgisi geldiğinde tüm odaya yayıla
+        socket.on('isSpeaking', (userId, userName, userPic) => {
+            io.to(roomName).emit('speakingUser', userId, userName, userPic);
+        });
+
+        // Sohbet mesajı geldiğinde tüm odaya yayıla
+        socket.on('chatMessage', (message) => {
+            io.to(roomName).emit('chatMessage', message);
         });
     });
 
@@ -63,15 +73,16 @@ io.on('connection', (socket) => {
         console.log('Bir kullanıcı ayrıldı:', socket.id);
         const roomName = 'sohbet_odasi';
         const disconnectedUserId = socket.id;
+        const disconnectedUserName = socket.userData ? socket.userData.name : 'Bilinmeyen Kullanıcı';
+
 
         // Bu socket'in userData'sını sil (garbage collection'a yardımcı olur)
-        // Eğer userData undefined veya null ise hata vermemesi için kontrol ekleyebiliriz
         if (socket.userData) {
             delete socket.userData;
         }
 
         // Diğer kullanıcılara bu kişinin ayrıldığını bildir
-        io.to(roomName).emit('userLeft', disconnectedUserId);
+        io.to(roomName).emit('userLeft', disconnectedUserId, disconnectedUserName);
 
         // Odadaki güncel kullanıcı listesini güncelle ve gönder
         updateRoomUsers(roomName);

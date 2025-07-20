@@ -66,12 +66,18 @@
             </div>
 
             <div class="right-panel">
-                <h2>Ses Akışları</h2>
-                <div id="videos" class="videos-container">
+                <h2>Sohbet</h2>
+                <div id="chat-messages" class="chat-messages">
                     </div>
+                <div class="chat-input-container">
+                    <input type="text" id="chat-input" placeholder="Mesajınızı yazın...">
+                    <button id="send-message-button">Gönder</button>
+                </div>
             </div>
         </div>
     </div>
+
+    <div id="videos-container"></div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="script.js"></script>
