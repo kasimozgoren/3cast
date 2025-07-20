@@ -1,579 +1,583 @@
-/* Genel Ayarlar /
+/* Genel Ayarlar */
 body {
-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-margin: 0;
-padding: 0;
-background-color: #2c3e50; / Koyu lacivert/antrasit arka plan /
-color: #ecf0f1; / Açık gri yazı rengi /
-display: flex;
-justify-content: center;
-align-items: center;
-min-height: 100vh; / Ekranın tamamını kapla /
-overflow: hidden; / Taşmaları engelle */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #2c3e50; /* Koyu lacivert/antrasit arka plan */
+    color: #ecf0f1; /* Açık gri yazı rengi */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Ekranın tamamını kapla */
+    overflow: hidden; /* Taşmaları engelle */
 }
-/* Kapsayıcılar /
+
+/* Kapsayıcılar */
 .password-screen,
 .profile-selection,
 .chat-room {
-width: 100%;
-max-width: 1200px;
-padding: 20px;
-box-sizing: border-box;
-display: flex; / Varsayılanı flex yapıyoruz, JS ile display: none olacak */
-flex-direction: column;
-align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex; /* Varsayılanı flex yapıyoruz, JS ile display: none olacak */
+    flex-direction: column;
+    align-items: center;
 }
 
-/* Başlıklar /
+/* Başlıklar */
 h1 {
-color: #3498db; / Canlı mavi başlık */
-margin-bottom: 30px;
-font-size: 2.8em;
-font-weight: 700;
-text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    color: #3498db; /* Canlı mavi başlık */
+    margin-bottom: 30px;
+    font-size: 2.8em;
+    font-weight: 700;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 h2 {
-color: #f39c12; /* Turuncu vurgu */
-margin-top: 20px;
-margin-bottom: 15px;
-font-size: 1.6em;
-font-weight: 600;
+    color: #f39c12; /* Turuncu vurgu */
+    margin-top: 20px;
+    margin-bottom: 15px;
+    font-size: 1.6em;
+    font-weight: 600;
 }
 
-/* Kartlar ve Genel Öğeler /
+/* Kartlar ve Genel Öğeler */
 .password-card,
 .profile-card {
-background-color: #34495e; / Daha koyu kart arka planı */
-border-radius: 12px;
-box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-padding: 30px;
-text-align: center;
-transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: #34495e; /* Daha koyu kart arka planı */
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    padding: 30px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Logo Stilleri /
+/* Logo Stilleri */
 .app-logo {
-height: 40px; / Header'daki logo boyutu /
-width: auto; / Genişliği otomatik ayarla /
-margin-right: 15px; / Başlık ile arasında boşluk /
-vertical-align: middle; / Metinle dikey olarak hizala */
+    height: 40px; /* Header'daki logo boyutu */
+    width: auto; /* Genişliği otomatik ayarla */
+    margin-right: 15px; /* Başlık ile arasında boşluk */
+    vertical-align: middle; /* Metinle dikey olarak hizala */
 }
 
 .auth-logo {
-/* Buradaki değişiklikler önemli! Logonun her zaman belirli bir max genişlikte ve oranında kalmasını sağlar. /
-max-width: 180px; / Logonun maksimum genişliği /
-height: auto; / Oranını koruyarak yüksekliği otomatik ayarla /
-margin-bottom: 25px; / Altında boşluk bırak /
-display: block; / Ortalamak için blok seviyesinde olmalı /
-margin-left: auto; / Ortala /
-margin-right: auto; / Ortala */
+    /* Buradaki değişiklikler önemli! Logonun her zaman belirli bir max genişlikte ve oranında kalmasını sağlar. */
+    max-width: 180px; /* Logonun maksimum genişliği */
+    height: auto; /* Oranını koruyarak yüksekliği otomatik ayarla */
+    margin-bottom: 25px; /* Altında boşluk bırak */
+    display: block; /* Ortalamak için blok seviyesinde olmalı */
+    margin-left: auto; /* Ortala */
+    margin-right: auto; /* Ortala */
 }
+
 
 /* Şifre Giriş Ekranı Stilleri */
 .password-screen {
-justify-content: center;
-align-items: center;
+    justify-content: center;
+    align-items: center;
 }
 
 .password-card {
-width: 100%;
-max-width: 450px;
-padding: 40px;
+    width: 100%;
+    max-width: 450px;
+    padding: 40px;
 }
 
 .password-card h2 {
-color: #ecf0f1;
-margin-bottom: 25px;
-font-size: 2.2em;
+    color: #ecf0f1;
+    margin-bottom: 25px;
+    font-size: 2.2em;
 }
 
 .password-card input {
-width: calc(100% - 20px);
-padding: 15px;
-margin-bottom: 20px;
-border: 1px solid #555;
-border-radius: 8px;
-font-size: 1.1em;
-background-color: #2c3e50; /* Koyu input arka planı */
-color: #ecf0f1;
-outline: none;
-transition: border-color 0.3s ease;
+    width: calc(100% - 20px);
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #555;
+    border-radius: 8px;
+    font-size: 1.1em;
+    background-color: #2c3e50; /* Koyu input arka planı */
+    color: #ecf0f1;
+    outline: none;
+    transition: border-color 0.3s ease;
 }
 
 .password-card input::placeholder {
-color: #bdc3c7; /* Açık gri placeholder */
+    color: #bdc3c7; /* Açık gri placeholder */
 }
 
 .password-card input:focus {
-border-color: #3498db;
+    border-color: #3498db;
 }
 
 .password-card button {
-background-color: #3498db;
-color: white;
-border: none;
-border-radius: 8px;
-padding: 15px 30px;
-font-size: 1.2em;
-cursor: pointer;
-transition: background-color 0.3s ease, transform 0.1s ease;
-width: 100%;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 15px 30px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    width: 100%;
 }
 
 .password-card button:hover {
-background-color: #2980b9;
-transform: translateY(-2px);
+    background-color: #2980b9;
+    transform: translateY(-2px);
 }
 
 .password-card button:active {
-transform: translateY(0);
+    transform: translateY(0);
 }
 
 .error-message {
-color: #e74c3c; /* Kırmızı hata mesajı */
-margin-top: 15px;
-font-size: 0.95em;
-font-weight: 500;
+    color: #e74c3c; /* Kırmızı hata mesajı */
+    margin-top: 15px;
+    font-size: 0.95em;
+    font-weight: 500;
 }
 
-/* Profil Seçim Ekranı /
+/* Profil Seçim Ekranı */
 .profile-selection {
-justify-content: center;
-align-items: flex-start; / Öğeleri yukarı yasla /
-padding-top: 50px; / Üstten biraz boşluk bırak /
-min-height: 80vh; / Minimum yükseklik ver /
-overflow-y: auto; / Taşma olursa kaydırılabilir yap */
+    justify-content: center;
+    align-items: flex-start; /* Öğeleri yukarı yasla */
+    padding-top: 50px; /* Üstten biraz boşluk bırak */
+    min-height: 80vh; /* Minimum yükseklik ver */
+    overflow-y: auto; /* Taşma olursa kaydırılabilir yap */
 }
 
 .profile-cards {
-display: flex; /* Flexbox layout'unu etkinleştir /
-flex-wrap: wrap; / Gerekirse kartlar alt satıra geçsin /
-gap: 20px; / Kartlar arasında boşluk /
-width: 100%;
-max-width: 900px;
-padding: 20px;
-box-sizing: border-box;
-justify-content: center; / Kartları yatayda ortala */
+    display: flex; /* Flexbox layout'unu etkinleştir */
+    flex-wrap: wrap; /* Gerekirse kartlar alt satıra geçsin */
+    gap: 20px; /* Kartlar arasında boşluk */
+    width: 100%;
+    max-width: 900px;
+    padding: 20px;
+    box-sizing: border-box;
+    justify-content: center; /* Kartları yatayda ortala */
 }
 
 .profile-card {
-cursor: pointer;
-background-color: #34495e; /* Daha koyu kart arka planı /
-border-radius: 12px;
-box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-padding: 20px;
-text-align: center;
-transition: transform 0.3s ease, box-shadow 0.3s ease;
-display: flex;
-flex-direction: column;
-align-items: center;
-width: calc(33.33% - 20px); / Her satırda 3 kart olacak şekilde genişlik (boşluklar çıkarıldı) /
-min-width: 200px; / Minimum genişlik /
-box-sizing: border-box; / Padding ve border genişliğe dahil olsun */
+    cursor: pointer;
+    background-color: #34495e; /* Daha koyu kart arka planı */
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: calc(33.33% - 20px); /* Her satırda 3 kart olacak şekilde genişlik (boşluklar çıkarıldı) */
+    min-width: 200px; /* Minimum genişlik */
+    box-sizing: border-box; /* Padding ve border genişliğe dahil olsun */
 }
 
 /* 2'li düzende daha iyi görünmesi için (ekran genişliğine göre ayarlanabilir) */
 @media (max-width: 768px) {
-.profile-card {
-width: calc(50% - 20px);
-}
+    .profile-card {
+        width: calc(50% - 20px);
+    }
 }
 
 /* Tekli düzende daha iyi görünmesi için (daha dar ekranlar) */
 @media (max-width: 500px) {
-.profile-card {
-width: calc(100% - 20px);
-}
+    .profile-card {
+        width: calc(100% - 20px);
+    }
 }
 
+
 .profile-card:hover {
-transform: translateY(-5px);
-box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
 .profile-card img {
-width: 80px;
-height: 80px;
-border-radius: 50%;
-object-fit: cover;
-margin-bottom: 10px;
-border: 3px solid #3498db; /* Mavi çerçeve */
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    border: 3px solid #3498db; /* Mavi çerçeve */
 }
 
 .profile-card h3 {
-color: #ecf0f1;
-margin-top: 0;
-margin-bottom: 15px;
-font-size: 1.3em;
+    color: #ecf0f1;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.3em;
 }
 
 .profile-card .connect-button {
-background-color: #27ae60; /* Yeşil düğme /
-color: white;
-border: none;
-border-radius: 8px;
-padding: 10px 20px;
-font-size: 1em;
-cursor: pointer;
-transition: background-color 0.3s ease;
-margin-top: auto; / Butonu kartın en altına yasla */
+    background-color: #27ae60; /* Yeşil düğme */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: auto; /* Butonu kartın en altına yasla */
 }
 
 .profile-card .connect-button:hover {
-background-color: #219654;
+    background-color: #219654;
 }
 
-/* Sohbet Odası Ekranı /
+/* Sohbet Odası Ekranı */
 .chat-room {
-display: flex;
-flex-direction: column;
-justify-content: flex-start;
-align-items: stretch;
-height: 95vh; / Ekranın %95'ini kapsasın /
-max-width: 1200px;
-margin: 0 auto;
-background-color: #222; / Koyu gri sohbet odası arkaplanı /
-border-radius: 15px;
-box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-overflow: hidden; / Taşmaları engellemek için */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    height: 95vh; /* Ekranın %95'ini kapsasın */
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #222; /* Koyu gri sohbet odası arkaplanı */
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    overflow: hidden; /* Taşmaları engellemek için */
 }
 
 .header {
-background-color: transparent; /* ARKA PLAN KALDIRILDI /
-color: #ecf0f1; / YAZI RENGİ AYARLANDI /
-padding: 20px 30px;
-border-bottom: 1px solid #444; / Daha hafif bir alt çizgi /
-display: flex;
-justify-content: space-between;
-align-items: center;
-flex-shrink: 0; / Başlığın küçülmesini engelle */
+    background-color: transparent; /* ARKA PLAN KALDIRILDI */
+    color: #ecf0f1; /* YAZI RENGİ AYARLANDI */
+    padding: 20px 30px;
+    border-bottom: 1px solid #444; /* Daha hafif bir alt çizgi */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0; /* Başlığın küçülmesini engelle */
 }
 
-.logo-and-welcome { /* Yeni eklediğimiz kapsayıcı için stil /
-display: flex;
-align-items: center; / Logo ve metni dikeyde ortala */
+.logo-and-welcome { /* Yeni eklediğimiz kapsayıcı için stil */
+    display: flex;
+    align-items: center; /* Logo ve metni dikeyde ortala */
 }
 
 .header h1 {
-margin: 0; /* Başlığın varsayılan marginlerini sıfırla /
-font-size: 2em;
-color: inherit; / Başlık rengini header'dan al */
+    margin: 0; /* Başlığın varsayılan marginlerini sıfırla */
+    font-size: 2em;
+    color: inherit; /* Başlık rengini header'dan al */
 }
 
 .action-buttons button {
-background-color: #f39c12; /* Turuncu düğme */
-color: white;
-border: none;
-border-radius: 8px;
-padding: 10px 20px;
-margin-left: 15px;
-font-size: 1em;
-cursor: pointer;
-transition: background-color 0.3s ease;
+    background-color: #f39c12; /* Turuncu düğme */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    margin-left: 15px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .action-buttons button:hover {
-background-color: #e67e22;
+    background-color: #e67e22;
 }
 
 .action-buttons button.unmuted {
-background-color: #27ae60; /* Yeşil mikrofon açık /
+    background-color: #27ae60; /* Yeşil mikrofon açık */
 }
 .action-buttons button.unmuted:hover {
-background-color: #219654;
+    background-color: #219654;
 }
 .action-buttons button.disconnect {
-background-color: #e74c3c; / Kırmızı ayrıl butonu */
+    background-color: #e74c3c; /* Kırmızı ayrıl butonu */
 }
 .action-buttons button.disconnect:hover {
-background-color: #c0392b;
+    background-color: #c0392b;
 }
 
 .main-content {
-display: flex;
-flex: 1; /* Kalan alanı doldur /
-padding: 20px;
-gap: 20px;
-overflow-y: hidden; / Ana içeriğin kendi kaydırma çubuğu olmasın, panellerin olsun */
+    display: flex;
+    flex: 1; /* Kalan alanı doldur */
+    padding: 20px;
+    gap: 20px;
+    overflow-y: hidden; /* Ana içeriğin kendi kaydırma çubuğu olmasın, panellerin olsun */
 }
 
 .left-panel,
 .right-panel {
-background-color: #2c3e50; /* Koyu lacivert/antrasit panel arka planı /
-border-radius: 10px;
-padding: 20px;
-box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
-display: flex; / İçindeki elemanları düzenlemek için flex kullan /
-flex-direction: column; / İçerikleri alt alta sırala /
-min-height: 0; / İçerik taşmasını engellemek için */
+    background-color: #2c3e50; /* Koyu lacivert/antrasit panel arka planı */
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+    display: flex; /* İçindeki elemanları düzenlemek için flex kullan */
+    flex-direction: column; /* İçerikleri alt alta sırala */
+    min-height: 0; /* İçerik taşmasını engellemek için */
 }
 
-/* Konuşan Kişi paneli daha büyük /
+/* Konuşan Kişi paneli daha büyük */
 .left-panel {
-flex: 2; / Konuşan Kişi paneli, Sohbet panelinin 2 katı kadar yer kaplasın /
-overflow-y: auto; / Kendi içeriği taşarsa kaydırılabilir olsun */
+    flex: 2; /* Konuşan Kişi paneli, Sohbet panelinin 2 katı kadar yer kaplasın */
+    overflow-y: auto; /* Kendi içeriği taşarsa kaydırılabilir olsun */
 }
 
-/* Sohbet paneli daha küçük /
+/* Sohbet paneli daha küçük */
 .right-panel {
-flex: 1; / Sohbet paneli daha az yer kaplasın /
-overflow-y: hidden; / Kendi kaydırma çubuğu chat-messages içinde olacak */
+    flex: 1; /* Sohbet paneli daha az yer kaplasın */
+    overflow-y: hidden; /* Kendi kaydırma çubuğu chat-messages içinde olacak */
 }
 
 .left-panel h2,
 .right-panel h2 {
-color: #f39c12; /* Turuncu vurgu /
-margin-top: 0;
-padding-bottom: 10px;
-border-bottom: 1px solid #4a6c89; / Bölücü çizgi /
-flex-shrink: 0; / Başlıkların küçülmesini engelle */
+    color: #f39c12; /* Turuncu vurgu */
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #4a6c89; /* Bölücü çizgi */
+    flex-shrink: 0; /* Başlıkların küçülmesini engelle */
 }
 
 .speaking-indicator {
-display: flex;
-align-items: center;
-justify-content: center; /* Ortala /
-flex-direction: column; / Alt alta sırala /
-margin-bottom: 25px;
-min-height: 150px; / Yeterli boşluk bırak /
-background-color: #34495e; / Konuşan kişi arka planı /
-border-radius: 10px;
-padding: 15px;
-box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-flex-shrink: 0; / Küçülmesini engelle */
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Ortala */
+    flex-direction: column; /* Alt alta sırala */
+    margin-bottom: 25px;
+    min-height: 150px; /* Yeterli boşluk bırak */
+    background-color: #34495e; /* Konuşan kişi arka planı */
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    flex-shrink: 0; /* Küçülmesini engelle */
 }
 
 .speaking-indicator img {
-width: 120px; /* Konuşan kişinin resmi daha büyük olsun /
-height: 120px;
-border-radius: 50%;
-object-fit: cover;
-border: 5px solid #3498db; / Mavi vurgu çerçevesi daha kalın /
-margin-bottom: 15px; / Alt boşluk artırıldı /
-box-shadow: 0 0 15px rgba(52, 152, 219, 0.5); / Hafif parlama efekti */
+    width: 120px; /* Konuşan kişinin resmi daha büyük olsun */
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid #3498db; /* Mavi vurgu çerçevesi daha kalın */
+    margin-bottom: 15px; /* Alt boşluk artırıldı */
+    box-shadow: 0 0 15px rgba(52, 152, 219, 0.5); /* Hafif parlama efekti */
 }
 
 .speaking-indicator span {
-font-size: 1.8em; /* Konuşan kişi adı daha büyük */
-font-weight: bold;
-color: #ecf0f1;
-text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    font-size: 1.8em; /* Konuşan kişi adı daha büyük */
+    font-weight: bold;
+    color: #ecf0f1;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .users-list {
-display: flex;
-flex-direction: column;
-gap: 10px;
-margin-top: 15px;
-flex: 1; /* Kalan alanı doldur /
-overflow-y: auto; / Kullanıcı listesi taşarsa kaydırılabilir olsun */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+    flex: 1; /* Kalan alanı doldur */
+    overflow-y: auto; /* Kullanıcı listesi taşarsa kaydırılabilir olsun */
 }
 
 .user-item {
-display: flex;
-align-items: center;
-background-color: #34495e; /* Kullanıcı öğesi arka planı /
-padding: 10px 15px;
-border-radius: 8px;
-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-flex-shrink: 0; / Küçülmesini engelle */
+    display: flex;
+    align-items: center;
+    background-color: #34495e; /* Kullanıcı öğesi arka planı */
+    padding: 10px 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    flex-shrink: 0; /* Küçülmesini engelle */
 }
 
 .user-item img {
-width: 40px;
-height: 40px;
-border-radius: 50%;
-object-fit: cover;
-margin-right: 15px;
-border: 2px solid #555;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 15px;
+    border: 2px solid #555;
 }
 
 .user-item span {
-font-size: 1.1em;
-font-weight: 500;
-color: #ecf0f1;
+    font-size: 1.1em;
+    font-weight: 500;
+    color: #ecf0f1;
 }
 
-/* Sohbet Alanı Stilleri /
+/* Sohbet Alanı Stilleri */
 .chat-messages {
-flex: 1; / Mesajları gösteren alanın genişlemesini sağlar /
-display: flex;
-flex-direction: column;
-gap: 10px;
-padding-right: 5px; / Kaydırma çubuğu için boşluk /
-margin-bottom: 15px;
-overflow-y: auto; / BURASI ÇOK ÖNEMLİ: Mesajlar arttıkça kaydırma çubuğu çıksın /
-scroll-behavior: smooth; / Yeni mesaj geldiğinde yumuşak kaydırma */
+    flex: 1; /* Mesajları gösteren alanın genişlemesini sağlar */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-right: 5px; /* Kaydırma çubuğu için boşluk */
+    margin-bottom: 15px;
+    overflow-y: auto; /* **BURASI ÇOK ÖNEMLİ:** Mesajlar arttıkça kaydırma çubuğu çıksın */
+    scroll-behavior: smooth; /* Yeni mesaj geldiğinde yumuşak kaydırma */
 }
 
 .chat-message {
-background-color: #4a6c89; /* Mesaj balonu arka planı /
-padding: 10px 15px;
-border-radius: 15px;
-word-wrap: break-word; / Uzun kelimeleri böler /
-max-width: 90%; / Mesajın maksimum genişliği */
-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    background-color: #4a6c89; /* Mesaj balonu arka planı */
+    padding: 10px 15px;
+    border-radius: 15px;
+    word-wrap: break-word; /* Uzun kelimeleri böler */
+    max-width: 90%; /* Mesajın maksimum genişliği */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .chat-message.self {
-align-self: flex-end; /* Kendi mesajlarını sağa hizala /
-background-color: #3498db; / Kendi mesajları için farklı renk */
+    align-self: flex-end; /* Kendi mesajlarını sağa hizala */
+    background-color: #3498db; /* Kendi mesajları için farklı renk */
 }
 
 .chat-message.other {
-align-self: flex-start; /* Diğer mesajları sola hizala */
+    align-self: flex-start; /* Diğer mesajları sola hizala */
 }
 
 .chat-message .sender-name {
-font-weight: bold;
-color: #ecf0f1;
-margin-bottom: 5px;
-display: block; /* Yeni satıra geçmesini sağlar */
+    font-weight: bold;
+    color: #ecf0f1;
+    margin-bottom: 5px;
+    display: block; /* Yeni satıra geçmesini sağlar */
 }
 
 .chat-message .message-text {
-font-size: 0.95em;
-line-height: 1.4;
+    font-size: 0.95em;
+    line-height: 1.4;
 }
 
 .chat-input-container {
-display: flex;
-gap: 10px;
-margin-top: auto; /* BURASI ÇOK ÖNEMLİ: Panel içinde en alta yapıştır /
-padding-top: 15px;
-border-top: 1px solid #4a6c89;
-flex-shrink: 0; / İçeriği küçülse bile bu kutunun küçülmesini engelle */
+    display: flex;
+    gap: 10px;
+    margin-top: auto; /* **BURASI ÇOK ÖNEMLİ:** Panel içinde en alta yapıştır */
+    padding-top: 15px;
+    border-top: 1px solid #4a6c89;
+    flex-shrink: 0; /* İçeriği küçülse bile bu kutunun küçülmesini engelle */
 }
 
 .chat-input-container input {
-flex: 1;
-padding: 12px;
-border: 1px solid #555;
-border-radius: 8px;
-font-size: 1em;
-background-color: #2c3e50;
-color: #ecf0f1;
-outline: none;
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #555;
+    border-radius: 8px;
+    font-size: 1em;
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    outline: none;
 }
 
 .chat-input-container input:focus {
-border-color: #3498db;
+    border-color: #3498db;
 }
 
 .chat-input-container button {
-background-color: #27ae60;
-color: white;
-border: none;
-border-radius: 8px;
-padding: 12px 20px;
-font-size: 1em;
-cursor: pointer;
-transition: background-color 0.3s ease;
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .chat-input-container button:hover {
-background-color: #219654;
+    background-color: #219654;
 }
 
-/* Ses akışları container'ını gizle /
+/* Ses akışları container'ını gizle */
 #videos-container {
-display: none; / Bu kısmı görünmez yapar /
-width: 0;
-height: 0;
-overflow: hidden; / İçeriğin taşmasını engelle */
+    display: none; /* Bu kısmı görünmez yapar */
+    width: 0;
+    height: 0;
+    overflow: hidden; /* İçeriğin taşmasını engelle */
 }
 
-/* Duyarlı Tasarım /
+
+/* Duyarlı Tasarım */
 @media (max-width: 768px) {
-body {
-padding: 10px;
-height: 100vh; / Mobil cihazlarda sanal klavyenin scroll olayını tetiklemesini engelle /
-overflow: hidden;
-}
-h1 {
-font-size: 2em;
-}
-.profile-selection {
-padding-top: 20px; / Mobil için daha az üst boşluk /
-min-height: auto; / Mobil için otomatik yükseklik /
-}
-.profile-cards {
-grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); / Mobil için daha küçük kartlar /
-padding: 10px;
-display: flex;
-flex-wrap: wrap;
-gap: 10px;
-justify-content: center;
-}
-.profile-card {
-padding: 15px;
-width: calc(50% - 10px);
-min-width: 140px;
-}
-.profile-card img {
-width: 60px;
-height: 60px;
-margin-bottom: 8px;
-}
-.profile-card h3 {
-font-size: 1.1em;
-margin-bottom: 10px;
-}
-.profile-card .connect-button {
-padding: 8px 15px;
-font-size: 0.9em;
-}
-.chat-room {
-height: 98vh; / Mobil cihazda daha fazla ekran alanı kullan /
-min-height: unset; / Önceden gelen min-height'ı sıfırla /
-max-width: 100%;
-padding: 10px; / Mobil için daha az padding /
-}
-.main-content {
-flex-direction: column;
-padding: 10px; / Mobil için daha az padding /
-overflow-y: auto; / Ana içeriğin kaydırılabilir olmasını sağla /
-}
-.left-panel,
-.right-panel {
-width: 100%;
-flex: none;
-margin-bottom: 15px; / Paneller arasında boşluk /
-}
-.right-panel {
-min-height: 300px; / Sohbet paneli için minimum yükseklik /
-}
-.speaking-indicator {
-min-height: 120px; / Mobil için daha küçük olabilir /
-}
-.speaking-indicator img {
-width: 90px;
-height: 90px;
-}
-.speaking-indicator span {
-font-size: 1.5em;
-}
-.chat-messages {
-margin-bottom: 10px; / Input'a daha yakın olsun /
-height: auto; / Yüksekliğini otomatik ayarla /
-flex-grow: 1; / Mevcut alanı doldursun */
-}
-.chat-input-container {
-padding-top: 10px;
-}
+    body {
+        padding: 10px;
+        height: 100vh; /* Mobil cihazlarda sanal klavyenin scroll olayını tetiklemesini engelle */
+        overflow: hidden;
+    }
+    h1 {
+        font-size: 2em;
+    }
+    .profile-selection {
+        padding-top: 20px; /* Mobil için daha az üst boşluk */
+        min-height: auto; /* Mobil için otomatik yükseklik */
+    }
+    .profile-cards {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Mobil için daha küçük kartlar */
+        padding: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+    }
+    .profile-card {
+        padding: 15px;
+        width: calc(50% - 10px);
+        min-width: 140px;
+    }
+    .profile-card img {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 8px;
+    }
+    .profile-card h3 {
+        font-size: 1.1em;
+        margin-bottom: 10px;
+    }
+    .profile-card .connect-button {
+        padding: 8px 15px;
+        font-size: 0.9em;
+    }
+    .chat-room {
+        height: 98vh; /* Mobil cihazda daha fazla ekran alanı kullan */
+        min-height: unset; /* Önceden gelen min-height'ı sıfırla */
+        max-width: 100%;
+        padding: 10px; /* Mobil için daha az padding */
+    }
+    .main-content {
+        flex-direction: column;
+        padding: 10px; /* Mobil için daha az padding */
+        overflow-y: auto; /* Ana içeriğin kaydırılabilir olmasını sağla */
+    }
+    .left-panel,
+    .right-panel {
+        width: 100%;
+        flex: none;
+        margin-bottom: 15px; /* Paneller arasında boşluk */
+    }
+    .right-panel {
+        min-height: 300px; /* Sohbet paneli için minimum yükseklik */
+    }
+    .speaking-indicator {
+        min-height: 120px; /* Mobil için daha küçük olabilir */
+    }
+    .speaking-indicator img {
+        width: 90px;
+        height: 90px;
+    }
+    .speaking-indicator span {
+        font-size: 1.5em;
+    }
+    .chat-messages {
+        margin-bottom: 10px; /* Input'a daha yakın olsun */
+        height: auto; /* Yüksekliğini otomatik ayarla */
+        flex-grow: 1; /* Mevcut alanı doldursun */
+    }
+    .chat-input-container {
+        padding-top: 10px;
+    }
 
-/* Mobil için logo boyutlandırması */
-.app-logo {
-    height: 30px; /* Mobil header'daki logo boyutu */
-    margin-right: 10px;
-}
-.auth-logo {
-    max-width: 150px; /* Mobil giriş/profil ekranındaki logo boyutu */
-    height: auto;
-    margin-bottom: 15px;
-}
-.header h1 {
-    font-size: 1.5em; /* Mobil başlık boyutu */
-}
+    /* Mobil için logo boyutlandırması */
+    .app-logo {
+        height: 30px; /* Mobil header'daki logo boyutu */
+        margin-right: 10px;
+    }
+    .auth-logo {
+        max-width: 150px; /* Mobil giriş/profil ekranındaki logo boyutu */
+        height: auto;
+        margin-bottom: 15px;
+    }
+    .header h1 {
+        font-size: 1.5em; /* Mobil başlık boyutu */
+    }
 }
