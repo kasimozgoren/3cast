@@ -90,7 +90,7 @@ h2 {
     font-size: 2.2em;
 }
 
-.password-card input[type="password"] {
+.password-card input {
     width: calc(100% - 20px);
     padding: 15px;
     margin-bottom: 20px;
@@ -103,11 +103,11 @@ h2 {
     transition: border-color 0.3s ease;
 }
 
-.password-card input[type="password"]::placeholder {
+.password-card input::placeholder {
     color: #bdc3c7; /* Açık gri placeholder */
 }
 
-.password-card input[type="password"]:focus {
+.password-card input:focus {
     border-color: #3498db;
 }
 
@@ -142,40 +142,55 @@ h2 {
 /* Profil Seçim Ekranı */
 .profile-selection {
     justify-content: center;
-    align-items: center;
+    align-items: flex-start; /* Öğeleri yukarı yasla */
+    padding-top: 50px; /* Üstten biraz boşluk bırak */
+    min-height: 80vh; /* Minimum yükseklik ver */
+    overflow-y: auto; /* Taşma olursa kaydırılabilir yap */
 }
 
 .profile-cards {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 30px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Daha dinamik kart düzeni */
+    gap: 20px;
+    width: 100%;
+    max-width: 900px;
+    padding: 20px;
+    box-sizing: border-box;
+    justify-content: center; /* Ortala */
 }
 
 .profile-card {
-    width: 280px;
     cursor: pointer;
+    background-color: #34495e; /* Daha koyu kart arka planı */
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .profile-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
 .profile-card img {
-    width: 120px;
-    height: 120px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
     object-fit: cover;
-    margin-bottom: 15px;
-    border: 4px solid #3498db; /* Mavi çerçeve */
+    margin-bottom: 10px;
+    border: 3px solid #3498db; /* Mavi çerçeve */
 }
 
 .profile-card h3 {
     color: #ecf0f1;
     margin-top: 0;
-    margin-bottom: 20px;
-    font-size: 1.5em;
+    margin-bottom: 15px;
+    font-size: 1.3em;
 }
 
 .profile-card .connect-button {
@@ -183,8 +198,8 @@ h2 {
     color: white;
     border: none;
     border-radius: 8px;
-    padding: 12px 25px;
-    font-size: 1.1em;
+    padding: 10px 20px;
+    font-size: 1em;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
@@ -209,9 +224,10 @@ h2 {
 }
 
 .header {
-    background-color: #e74c3c; /* Kırmızı başlık arka planı */
+    background-color: transparent; /* ARKA PLAN KALDIRILDI */
+    color: #ecf0f1; /* YAZI RENGİ AYARLANDI */
     padding: 20px 30px;
-    border-bottom: 1px solid #c0392b; /* Daha koyu kırmızı alt çizgi */
+    border-bottom: 1px solid #444; /* Daha hafif bir alt çizgi */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -226,7 +242,7 @@ h2 {
 .header h1 {
     margin: 0; /* Başlığın varsayılan marginlerini sıfırla */
     font-size: 2em;
-    color: #ecf0f1;
+    color: inherit; /* Başlık rengini header'dan al */
 }
 
 .action-buttons button {
@@ -414,7 +430,7 @@ h2 {
     flex-shrink: 0; /* İçeriği küçülse bile bu kutunun küçülmesini engelle */
 }
 
-.chat-input-container input[type="text"] {
+.chat-input-container input {
     flex: 1;
     padding: 12px;
     border: 1px solid #555;
@@ -425,7 +441,7 @@ h2 {
     outline: none;
 }
 
-.chat-input-container input[type="text"]:focus {
+.chat-input-container input:focus {
     border-color: #3498db;
 }
 
@@ -458,18 +474,34 @@ h2 {
     body {
         padding: 10px;
         height: 100vh; /* Mobil cihazlarda sanal klavyenin scroll olayını tetiklemesini engelle */
-        overflow: hidden; 
+        overflow: hidden;
     }
     h1 {
         font-size: 2em;
     }
+    .profile-selection {
+        padding-top: 20px; /* Mobil için daha az üst boşluk */
+        min-height: auto; /* Mobil için otomatik yükseklik */
+    }
     .profile-cards {
-        flex-direction: column;
-        align-items: center;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Mobil için daha küçük kartlar */
+        padding: 10px;
     }
     .profile-card {
-        width: 90%;
-        max-width: 300px;
+        padding: 15px;
+    }
+    .profile-card img {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 8px;
+    }
+    .profile-card h3 {
+        font-size: 1.1em;
+        margin-bottom: 10px;
+    }
+    .profile-card .connect-button {
+        padding: 8px 15px;
+        font-size: 0.9em;
     }
     .chat-room {
         height: 98vh; /* Mobil cihazda daha fazla ekran alanı kullan */
