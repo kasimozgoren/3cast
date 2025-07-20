@@ -8,7 +8,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    min-height: 100vh; /* Ekranın tamamını kapla */
     overflow: hidden; /* Taşmaları engelle */
 }
 
@@ -180,13 +180,13 @@ h2 {
     flex-direction: column;
     justify-content: flex-start;
     align-items: stretch;
-    height: 95vh; /* Yüksekliği ekranın %95'i yapalım */
+    height: 95vh; /* Ekranın %95'ini kapsasın */
     max-width: 1200px;
     margin: 0 auto;
     background-color: #222; /* Koyu gri sohbet odası arkaplanı */
     border-radius: 15px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-    overflow: hidden;
+    overflow: hidden; /* Taşmaları engellemek için */
 }
 
 .header {
@@ -196,6 +196,7 @@ h2 {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-shrink: 0; /* Başlığın küçülmesini engelle */
 }
 
 .header h1 {
@@ -238,7 +239,7 @@ h2 {
     flex: 1; /* Kalan alanı doldur */
     padding: 20px;
     gap: 20px;
-    /* Önceki row-reverse kaldırıldı, HTML sırası belirleyici */
+    overflow-y: hidden; /* Ana içeriğin kendi kaydırma çubuğu olmasın, panellerin olsun */
 }
 
 .left-panel,
@@ -247,22 +248,22 @@ h2 {
     border-radius: 10px;
     padding: 20px;
     box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
-    overflow-y: auto; /* İçerik taşarsa kaydırma çubuğu */
+    display: flex; /* İçindeki elemanları düzenlemek için flex kullan */
+    flex-direction: column; /* İçerikleri alt alta sırala */
+    min-height: 0; /* İçerik taşmasını engellemek için */
 }
 
-/* !!!!!!!! YENİ KISIM !!!!!!!! */
+/* Konuşan Kişi paneli daha büyük */
 .left-panel {
-    flex: 2; /* Konuşan Kişi paneli, Ses Akışları panelinin 2 katı kadar yer kaplasın */
-    display: flex;
-    flex-direction: column;
+    flex: 2; /* Konuşan Kişi paneli, Sohbet panelinin 2 katı kadar yer kaplasın */
+    overflow-y: auto; /* Kendi içeriği taşarsa kaydırılabilir olsun */
 }
 
+/* Sohbet paneli daha küçük */
 .right-panel {
-    flex: 1; /* Ses Akışları paneli daha az yer kaplasın */
-    display: flex;
-    flex-direction: column;
+    flex: 1; /* Sohbet paneli daha az yer kaplasın */
+    overflow-y: hidden; /* Kendi kaydırma çubuğu chat-messages içinde olacak */
 }
-/* !!!!!!!! YENİ KISIM SONU !!!!!!!! */
 
 .left-panel h2,
 .right-panel h2 {
@@ -270,6 +271,7 @@ h2 {
     margin-top: 0;
     padding-bottom: 10px;
     border-bottom: 1px solid #4a6c89; /* Bölücü çizgi */
+    flex-shrink: 0; /* Başlıkların küçülmesini engelle */
 }
 
 .speaking-indicator {
@@ -283,21 +285,24 @@ h2 {
     border-radius: 10px;
     padding: 15px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    flex-shrink: 0; /* Küçülmesini engelle */
 }
 
 .speaking-indicator img {
-    width: 80px;
-    height: 80px;
+    width: 120px; /* Konuşan kişinin resmi daha büyük olsun */
+    height: 120px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid #3498db; /* Mavi vurgu çerçevesi */
-    margin-bottom: 10px;
+    border: 5px solid #3498db; /* Mavi vurgu çerçevesi daha kalın */
+    margin-bottom: 15px; /* Alt boşluk artırıldı */
+    box-shadow: 0 0 15px rgba(52, 152, 219, 0.5); /* Hafif parlama efekti */
 }
 
 .speaking-indicator span {
-    font-size: 1.4em;
+    font-size: 1.8em; /* Konuşan kişi adı daha büyük */
     font-weight: bold;
     color: #ecf0f1;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .users-list {
@@ -305,6 +310,8 @@ h2 {
     flex-direction: column;
     gap: 10px;
     margin-top: 15px;
+    flex: 1; /* Kalan alanı doldur */
+    overflow-y: auto; /* Kullanıcı listesi taşarsa kaydırılabilir olsun */
 }
 
 .user-item {
@@ -314,6 +321,7 @@ h2 {
     padding: 10px 15px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    flex-shrink: 0; /* Küçülmesini engelle */
 }
 
 .user-item img {
@@ -331,29 +339,102 @@ h2 {
     color: #ecf0f1;
 }
 
-.videos-container {
+/* Sohbet Alanı Stilleri */
+.chat-messages {
+    flex: 1; /* Mesajları gösteren alanın genişlemesini sağlar */
     display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: center;
-    align-content: flex-start; /* Elemanları yukarıdan hizala */
-    flex: 1; /* Kalan alanı doldur */
-    padding-top: 15px;
+    flex-direction: column;
+    gap: 10px;
+    padding-right: 5px; /* Kaydırma çubuğu için boşluk */
+    margin-bottom: 15px;
+    overflow-y: auto; /* **BURASI ÇOK ÖNEMLİ:** Mesajlar arttıkça kaydırma çubuğu çıksın */
+    scroll-behavior: smooth; /* Yeni mesaj geldiğinde yumuşak kaydırma */
 }
 
-.videos-container audio {
-    width: 100px; /* Ses için küçük boyut */
-    height: 30px;
-    background-color: #4a6c89; /* Ses oynatıcı arka planı */
-    border-radius: 5px;
-    /* Eğer video eklenirse daha büyük boyutlar gerekebilir */
-    display: none; /* Ses akışlarını gizli tutalım */
+.chat-message {
+    background-color: #4a6c89; /* Mesaj balonu arka planı */
+    padding: 10px 15px;
+    border-radius: 15px;
+    word-wrap: break-word; /* Uzun kelimeleri böler */
+    max-width: 90%; /* Mesajın maksimum genişliği */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
+
+.chat-message.self {
+    align-self: flex-end; /* Kendi mesajlarını sağa hizala */
+    background-color: #3498db; /* Kendi mesajları için farklı renk */
+}
+
+.chat-message.other {
+    align-self: flex-start; /* Diğer mesajları sola hizala */
+}
+
+.chat-message .sender-name {
+    font-weight: bold;
+    color: #ecf0f1;
+    margin-bottom: 5px;
+    display: block; /* Yeni satıra geçmesini sağlar */
+}
+
+.chat-message .message-text {
+    font-size: 0.95em;
+    line-height: 1.4;
+}
+
+.chat-input-container {
+    display: flex;
+    gap: 10px;
+    margin-top: auto; /* **BURASI ÇOK ÖNEMLİ:** Panel içinde en alta yapıştır */
+    padding-top: 15px;
+    border-top: 1px solid #4a6c89;
+    flex-shrink: 0; /* İçeriği küçülse bile bu kutunun küçülmesini engelle */
+}
+
+.chat-input-container input[type="text"] {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #555;
+    border-radius: 8px;
+    font-size: 1em;
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    outline: none;
+}
+
+.chat-input-container input[type="text"]:focus {
+    border-color: #3498db;
+}
+
+.chat-input-container button {
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.chat-input-container button:hover {
+    background-color: #219654;
+}
+
+/* Ses akışları container'ını gizle */
+#videos-container {
+    display: none; /* Bu kısmı görünmez yapar */
+    width: 0;
+    height: 0;
+    overflow: hidden; /* İçeriğin taşmasını engelle */
+}
+
 
 /* Duyarlı Tasarım */
 @media (max-width: 768px) {
     body {
         padding: 10px;
+        height: 100vh; /* Mobil cihazlarda sanal klavyenin scroll olayını tetiklemesini engelle */
+        overflow: hidden; 
     }
     h1 {
         font-size: 2em;
@@ -367,16 +448,41 @@ h2 {
         max-width: 300px;
     }
     .chat-room {
-        height: auto;
-        min-height: 90vh;
+        height: 98vh; /* Mobil cihazda daha fazla ekran alanı kullan */
+        min-height: unset; /* Önceden gelen min-height'ı sıfırla */
+        max-width: 100%;
+        padding: 10px; /* Mobil için daha az padding */
     }
     .main-content {
         flex-direction: column;
-        /* column-reverse kaldırılarak, mobil görünümde de Konuşan Kişi üstte kalır */
+        padding: 10px; /* Mobil için daha az padding */
+        overflow-y: auto; /* Ana içeriğin kaydırılabilir olmasını sağla */
     }
     .left-panel,
     .right-panel {
         width: 100%;
-        flex: none; /* Mobil cihazlarda esnekliği kapat, tam genişlik ver */
+        flex: none;
+        margin-bottom: 15px; /* Paneller arasında boşluk */
+    }
+    .right-panel {
+        min-height: 300px; /* Sohbet paneli için minimum yükseklik */
+    }
+    .speaking-indicator {
+        min-height: 120px; /* Mobil için daha küçük olabilir */
+    }
+    .speaking-indicator img {
+        width: 90px;
+        height: 90px;
+    }
+    .speaking-indicator span {
+        font-size: 1.5em;
+    }
+    .chat-messages {
+        margin-bottom: 10px; /* Input'a daha yakın olsun */
+        height: auto; /* Yüksekliğini otomatik ayarla */
+        flex-grow: 1; /* Mevcut alanı doldursun */
+    }
+    .chat-input-container {
+        padding-top: 10px;
     }
 }
