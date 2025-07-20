@@ -46,7 +46,7 @@ const iceServers = {
 // Şifre Giriş İşlevselliği
 // -----------------------------------------------------------------------------
 
-const CORRECT_PASSWORD = "benimsifrem"; // BURAYA KENDİ İSTEDİĞİNİZ ŞİFREYİ YAZIN!
+const CORRECT_PASSWORD = "3castgizlisifresibromen"; // BURAYA KENDİ İSTEDİĞİNİZ ŞİFREYİ YAZIN!
 
 passwordSubmitButton.addEventListener('click', () => {
     const enteredPassword = passwordInput.value;
