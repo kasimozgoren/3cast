@@ -1,5 +1,5 @@
 // Socket.IO sunucusuna bağlanıyoruz
-const socket = io(); // Render için dinamik bağlantı
+const socket = io(); // Render için dinamik bağlant
 
 // HTML elemanlarını seçiyoruz (ID DÜZELTMELERİ BURADA YAPILDI)
 const passwordScreen = document.querySelector('.password-screen');
@@ -216,7 +216,7 @@ function updateMuteButton() {
 let speakingTimeout;
 function showSpeakingUser(userId, userName, userPic) {
     // Konuk profili veya olmayan resimler için varsayılan resim
-    const displayPic = userPic || 'images/default_guest.jpg'; // Misafir resmi doğru ayarlandı
+    const displayPic = userPic || 'images/default_guest.jpg';
 
     speakingProfilePic.src = displayPic;
     speakingProfilePic.alt = `${userName} Profil Resmi`;
@@ -243,7 +243,7 @@ function updateUsersInRoom(users) {
             const userItem = document.createElement('div');
             userItem.classList.add('user-item');
             // Konuk profili için özel resim yolu veya varsayılan resim
-            const userPicPath = user.pic || 'images/default_guest.jpg'; // Misafir resmi doğru ayarlandı
+            const userPicPath = user.pic || 'images/default_guest.jpg';
             userItem.innerHTML = `
                 <img src="${userPicPath}" alt="${user.name} Profil Resmi">
                 <span>${user.name} ${user.id === socket.id ? '(Sen)' : ''}</span>
@@ -395,7 +395,7 @@ function displayMessage(message) {
     }
 
     // Konuşan kişinin profil resmi için varsayılan guest resmi
-    const displayPic = message.senderPic || 'images/default_guest.jpg'; // Misafir resmi doğru ayarlandı
+    const displayPic = message.senderPic || 'images/default_guest.jpg';
 
     messageElement.innerHTML = `
         <span class="sender-name">${message.senderName} <span style="font-weight: normal; font-size: 0.8em; color: #bdc3c7;">(${message.timestamp})</span></span>
