@@ -19,19 +19,19 @@ const disconnectButton = document.getElementById('disconnect-button');
 const chatMessagesDiv = document.getElementById('chat-messages');
 const chatInput = document.getElementById('chat-input');
 const sendMessageButton = document.getElementById('send-message-button');
-const videosContainer = document.getElementById('videos-container'); // Ses akışları için container
+const videosContainer = document.getElementById('videos-container'); // Ses akışları için container (gizli)
 
 const usersInRoomList = document.getElementById('users-in-room');
 
 // Mevcut kullanıcı bilgilerini tutacak değişken
 let currentUser = null; 
 
-// WebRTC ile ilgili değişkenler (GERİ GETİRİLDİ)
+// WebRTC ile ilgili değişkenler
 const peerConnections = {}; 
 let localStream; 
 let isMuted = false; 
 
-// STUN sunucuları (GERİ GETİRİLDİ)
+// STUN sunucuları
 const iceServers = {
     'iceServers': [
         { 'urls': 'stun:stun.l.google.com:19302' },
@@ -89,8 +89,15 @@ connectButtons.forEach(button => {
         console.log(`${currentUser.name} profili seçildi ve odaya bağlanılıyor...`);
         
         try {
-            // Mikrofon akışını başlat (SES İLETİŞİMİ İÇİN GEREKLİ)
-            localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+            // Mikrofon akışını başlat ve gürültü engelleme/iyileştirme özelliklerini etkinleştir
+            localStream = await navigator.mediaDevices.getUserMedia({ 
+                audio: {
+                    echoCancellation: true,      // Yankı giderme
+                    noiseSuppression: true,      // Gürültü engelleme
+                    autoGainControl: true        // Otomatik ses seviyesi kontrolü
+                }, 
+                video: false 
+            });
             
             // Mikrofon durumunu güncelle
             isMuted = false;
@@ -99,13 +106,13 @@ connectButtons.forEach(button => {
             // Sunucuya odaya katıldığını bildir
             socket.emit('joinRoom', currentUser); 
 
-            // Kendi sesini sürekli dinle ve konuşma algıla (WebRTC'den bağımsız)
+            // Kendi sesini sürekli dinle ve konuşma algıla
             setupLocalAudioAnalysis();
 
         } catch (error) {
             console.error('Mikrofon erişimi reddedildi veya bir hata oluştu:', error);
             alert('Mikrofon erişimi izni vermeniz gerekiyor! Sesli iletişim ve konuşma tespiti çalışmayabilir.');
-            // Mikrofon erişimi olmasa bile odaya katılmaya devam et
+            // Mikrofon erişimi olmasa bile odaya katılmaya devam et (ancak sesli iletişim olmaz)
             socket.emit('joinRoom', currentUser); 
         }
     });
@@ -124,7 +131,7 @@ muteButton.addEventListener('click', () => {
 });
 
 disconnectButton.addEventListener('click', () => {
-    // WebRTC peer bağlantılarını kapat (GERİ GETİRİLDİ)
+    // WebRTC peer bağlantılarını kapat
     for (const peerId in peerConnections) {
         if (peerConnections[peerId]) {
             peerConnections[peerId].close();
@@ -206,7 +213,7 @@ function updateUsersInRoom(users) {
 }
 
 // -----------------------------------------------------------------------------
-// WebRTC İşlevselliği (GERİ GETİRİLDİ)
+// WebRTC İşlevselliği
 // -----------------------------------------------------------------------------
 
 function createPeerConnection(peerId) {
@@ -265,7 +272,9 @@ function createPeerConnection(peerId) {
 function removeRemoteAudio(peerId) {
     const remoteAudio = document.getElementById(`audio-${peerId}`);
     if (remoteAudio) {
-        remoteAudio.srcObject.getTracks().forEach(track => track.stop()); // Stream'i durdur
+        if (remoteAudio.srcObject) {
+            remoteAudio.srcObject.getTracks().forEach(track => track.stop()); // Stream'i durdur
+        }
         remoteAudio.remove(); // HTML'den kaldır
         console.log(`Uzak ses (${peerId}) kaldırıldı.`);
     }
@@ -384,7 +393,7 @@ socket.on('userJoined', (newSocketId, userData) => {
         });
     }
 
-    // Yeni bağlanan kullanıcı için PeerConnection oluştur (GERİ GETİRİLDİ)
+    // Yeni bağlanan kullanıcı için PeerConnection oluştur
     if (newSocketId !== socket.id && localStream) {
         const pc = createPeerConnection(newSocketId);
         peerConnections[newSocketId] = pc;
@@ -402,7 +411,7 @@ socket.on('userLeft', (socketId, userName) => {
         timestamp: new Date().toLocaleTimeString()
     });
 
-    // WebRTC PeerConnection'ı ve uzak ses/video'yu kapat (GERİ GETİRİLDİ)
+    // WebRTC PeerConnection'ı ve uzak ses/video'yu kapat
     if (peerConnections[socketId]) {
         peerConnections[socketId].close();
         delete peerConnections[socketId];
@@ -417,7 +426,7 @@ socket.on('userLeft', (socketId, userName) => {
     }
 });
 
-// WebRTC sinyalizasyon mesajları (GERİ GETİRİLDİ)
+// WebRTC sinyalizasyon mesajları
 socket.on('offer', async (senderId, offer) => {
     if (!peerConnections[senderId]) {
         peerConnections[senderId] = createPeerConnection(senderId);
