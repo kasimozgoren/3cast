@@ -1,5 +1,5 @@
 // Socket.IO sunucusuna bağlanıyoruz
-const socket = io(); // Render için dinamik bağlant
+const socket = io(); // Render için dinamik bağlantı
 
 // HTML elemanlarını seçiyoruz (ID DÜZELTMELERİ BURADA YAPILDI)
 const passwordScreen = document.querySelector('.password-screen');
@@ -78,7 +78,7 @@ passwordInput.addEventListener('keypress', (event) => {
 const PROFILES = [
     { id: 'stannis', name: 'Stannis', pic: 'images/stannis.jpg' },
     { id: 'hope', name: 'Hope', pic: 'images/hope.jpg' },
-    { id: 'mecburiyetten', name: 'Mecburiyetten', pic: 'images/mecburiyetten.jpg' },
+    { id: 'mecburietten', name: 'Mecburietten', pic: 'images/mecburietten.jpg' }, // DÜZELTME: mecburietten
     { id: 'default', name: 'Misafir', pic: 'images/default_guest.jpg' } // Misafir resmi
 ];
 
