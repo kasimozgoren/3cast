@@ -22,12 +22,12 @@ const videosContainer = document.getElementById('videos-container'); // Uzaktan 
 // Sabit şifre
 const CORRECT_PASSWORD = '123';
 
-// Kullanıcı profilleri tanımları
+// Kullanıcı profilleri tanımları (Kesinleşen 4 profil)
 const profiles = {
     'stannis': { name: 'Stannis', image: 'images/stannis.jpg' },
     'vion': { name: 'Vion', image: 'images/vion.jpg' },
     'mecburietten': { name: 'Mecburietten', image: 'images/mecburietten.jpg' },
-    'guest': { name: 'Misafir', image: 'images/default_guest.jpg' } // Misafir profili
+    'misafir': { name: 'Misafir', image: 'images/default_guest.jpg' } // Misafir profili için default_guest.jpg kullanıldı
 };
 
 let localStream;
@@ -117,6 +117,9 @@ function setupLocalAudioAnalysis() {
     analyser.smoothingTimeConstant = 0.3;
     analyser.fftSize = 1024;
 
+    // DEPRECATION UYARISI İÇİN GEÇİCİ ÇÖZÜM: ScriptProcessorNode yerine AudioWorkletNode kullanımı daha modern ve tavsiye edilir.
+    // Ancak basitlik ve uyumluluk için şimdilik ScriptProcessorNode kullanmaya devam ediyoruz.
+    // Gelecekte AudioWorkletNode'a geçiş yapılmalı.
     javascriptNode = audioContext.createScriptProcessor(2048, 1, 1);
 
     microphone.connect(analyser);
@@ -237,13 +240,13 @@ function createPeerConnection(otherUserSocketId) {
     if (localStream) {
         localStream.getTracks().forEach(track => {
             pc.addTrack(track, localStream);
-            // console.log(`Yerel ses track'i eklendi: ${track.kind} ${track.id}`);
+            console.log(`Yerel ses track'i eklendi: ${track.kind} ${track.id} to ${otherUserSocketId}`);
         });
     }
 
     // Uzak medya akışı (ses) geldiğinde
     pc.ontrack = (event) => {
-        // console.log(`Uzak akış geldi: ${otherUserSocketId}`, event.streams[0]);
+        console.log(`Uzak akış geldi from ${otherUserSocketId}:`, event.streams[0]);
         let remoteAudio = document.getElementById(`audio-${otherUserSocketId}`);
         if (!remoteAudio) {
             remoteAudio = document.createElement('audio');
@@ -251,7 +254,7 @@ function createPeerConnection(otherUserSocketId) {
             remoteAudio.autoplay = true; // Otomatik oynatma
             remoteAudio.playsinline = true; // iOS için gerekli olabilir
             videosContainer.appendChild(remoteAudio); // Gizli container'a ekle
-            // console.log(`Yeni audio elementi oluşturuldu ve eklendi: audio-${otherUserSocketId}`);
+            console.log(`Yeni audio elementi oluşturuldu ve eklendi: audio-${otherUserSocketId}`);
         }
         remoteAudio.srcObject = event.streams[0]; // Akışı ses elementine ata
     };
@@ -277,7 +280,9 @@ function createPeerConnection(otherUserSocketId) {
     pc.onnegotiationneeded = async () => {
         // console.log('Müzakere gerekli:', otherUserSocketId);
         try {
-            if (pc.signalingState !== 'stable') { // Sadece stabil durumda teklif oluştur
+            // Sadece stabil durumda teklif oluştur ve gönder
+            if (pc.signalingState !== 'stable') {
+                console.warn(`Müzakere zaten devam ediyor veya durum stabil değil (${pc.signalingState}). Teklif oluşturulmadı.`);
                 return;
             }
             const offer = await pc.createOffer();
@@ -287,7 +292,7 @@ function createPeerConnection(otherUserSocketId) {
                 target: otherUserSocketId,
                 senderProfile: currentProfile // Teklif gönderenin profilini de yolla
             });
-            // console.log(`Müzakere teklifi gönderildi: ${otherUserSocketId}`);
+            console.log(`Müzakere teklifi gönderildi: ${otherUserSocketId}`);
         } catch (error) {
             console.error('Müzakere teklifi oluşturma hatası:', error);
         }
@@ -320,7 +325,7 @@ socket.on('message', (data) => {
 // Kullanıcı listesi güncellendiğinde
 socket.on('updateUsers', (users) => {
     usersList.innerHTML = ''; // Listeyi temizle
-    const currentPeerIds = new Set(Object.keys(peerConnections)); // Mevcut bağlantıları takip et
+    const currentActivePeerIds = new Set(Object.keys(peerConnections)); // Mevcut bağlantıları takip et
 
     users.forEach(user => {
         // Kendi kendimize PeerConnection oluşturma
@@ -340,25 +345,14 @@ socket.on('updateUsers', (users) => {
         // Yeni kullanıcılar için PeerConnection başlat
         if (!peerConnections[user.id]) {
             console.log(`Yeni kullanıcı algılandı: ${user.profile.name} (${user.id}). PeerConnection başlatılıyor.`);
-            const pc = createPeerConnection(user.id);
-            // Yeni kullanıcı için teklif oluştur ve gönder
-            pc.createOffer()
-                .then(offer => pc.setLocalDescription(offer))
-                .then(() => {
-                    socket.emit('webrtc-offer', {
-                        sdp: pc.localDescription,
-                        target: user.id,
-                        senderProfile: currentProfile // Teklif gönderenin profilini de yolla
-                    });
-                    // console.log(`Teklif gönderildi ${user.id}:`, pc.localDescription);
-                })
-                .catch(error => console.error('Teklif oluşturma hatası:', error));
+            // createPeerConnection içinde onnegotiationneeded ile offer otomatik gönderilecek
+            createPeerConnection(user.id);
         }
-        currentPeerIds.delete(user.id); // Bu kullanıcı hala odada, silmeyeceğiz
+        currentActivePeerIds.delete(user.id); // Bu kullanıcı hala odada, silmeyeceğiz
     });
 
     // Odadan ayrılan kullanıcıların bağlantılarını kapat ve ses elementlerini kaldır
-    currentPeerIds.forEach(disconnectedPeerId => {
+    currentActivePeerIds.forEach(disconnectedPeerId => {
         if (peerConnections[disconnectedPeerId]) {
             console.log(`Kullanıcı odadan ayrıldı: ${disconnectedPeerId}. PeerConnection kapatılıyor.`);
             peerConnections[disconnectedPeerId].close();
@@ -374,7 +368,7 @@ socket.on('updateUsers', (users) => {
 
 // Sunucudan WebRTC teklifi alındığında
 socket.on('webrtc-offer', async (data) => {
-    // console.log(`WebRTC Teklifi Alındı from ${data.senderProfile.name} (${data.senderId})`);
+    console.log(`WebRTC Teklifi Alındı from ${data.senderProfile.name} (${data.senderId})`);
     const pc = createPeerConnection(data.senderId); // Teklif gönderen için PeerConnection oluştur/getir
 
     try {
@@ -385,7 +379,7 @@ socket.on('webrtc-offer', async (data) => {
             sdp: pc.localDescription,
             target: data.senderId,
         });
-        // console.log(`Cevap gönderildi ${data.senderId}:`, pc.localDescription);
+        console.log(`Cevap gönderildi ${data.senderId}:`, pc.localDescription);
     } catch (error) {
         console.error('Teklif işleme hatası:', error);
     }
@@ -393,12 +387,12 @@ socket.on('webrtc-offer', async (data) => {
 
 // Sunucudan WebRTC cevabı alındığında
 socket.on('webrtc-answer', async (data) => {
-    // console.log(`WebRTC Cevabı Alındı from ${data.senderId}`);
+    console.log(`WebRTC Cevabı Alındı from ${data.senderId}`);
     const pc = peerConnections[data.senderId];
     if (pc) {
         try {
             await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
-            // console.log(`Uzak cevabı ayarlandı ${data.senderId}`);
+            console.log(`Uzak cevabı ayarlandı ${data.senderId}`);
         } catch (error) {
             console.error('Cevap işleme hatası:', error);
         }
@@ -409,7 +403,7 @@ socket.on('webrtc-answer', async (data) => {
 socket.on('ice-candidate', async (data) => {
     // console.log(`ICE Adayı Alındı from ${data.senderId}`);
     const pc = peerConnections[data.senderId];
-    if (pc) {
+    if (pc && data.candidate) { // Aday null veya undefined gelirse hata vermemek için kontrol
         try {
             await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
             // console.log(`ICE Adayı eklendi ${data.senderId}`);
@@ -426,7 +420,6 @@ socket.on('speaking', (profile) => {
 
 // Konuşmayı durdurduğunu göster
 socket.on('stoppedSpeaking', () => {
-    // Sadece eğer konuşan kişi şu an gösterilen kişiyse gizle
     if (speakingTimeout) {
         clearTimeout(speakingTimeout);
     }
