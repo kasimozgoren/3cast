@@ -20,12 +20,12 @@ const speakingUserImage = document.getElementById('speakingUserImage');
 const videosContainer = document.getElementById('videos-container'); // Gizli videolar için
 
 // Sabit şifre
-const CORRECT_PASSWORD = '3castgizlisifresibromen'; // Bu şifreyi kendi istediğinizle değiştirin
+const CORRECT_PASSWORD = '123'; // Bu şifreyi kendi istediğinizle değiştirin
 
 // Kullanıcı profilleri tanımları
 const profiles = {
     'stannis': { name: 'Stannis', image: 'images/stannis.jpg' },
-    'vion': { name: 'Vion', image: 'images/vion.jpg' }, // Hope yerine Vion
+    'vion': { name: 'Vion', image: 'images/vion.jpg' },
     'mecburietten': { name: 'Mecburietten', image: 'images/mecburietten.jpg' },
     'guest': { name: 'Misafir', image: 'images/default_guest.jpg' } // Misafir profili
 };
