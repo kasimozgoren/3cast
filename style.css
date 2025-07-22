@@ -274,7 +274,7 @@ h2 {
     margin-left: 15px;
     font-size: 1em;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.1s ease;
 }
 
 .action-buttons button:hover {
@@ -334,8 +334,9 @@ h2 {
     flex-shrink: 0; /* Başlıkların küçülmesini engelle */
 }
 
+/* Konuşan Kişi Bölmesi: Her zaman görünür olacak */
 .speaking-indicator {
-    display: none; /* Varsayılan olarak gizli olsun */
+    display: flex; /* Her zaman görünür olsun */
     align-items: center;
     justify-content: center; /* Ortala */
     flex-direction: column; /* Alt alta sırala */
@@ -346,6 +347,7 @@ h2 {
     padding: 15px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     flex-shrink: 0; /* Küçülmesini engelle */
+    transition: all 0.3s ease-in-out; /* Geçiş efekti */
 }
 
 .speaking-indicator img {
@@ -356,6 +358,7 @@ h2 {
     border: 5px solid #3498db; /* Mavi vurgu çerçevesi daha kalın */
     margin-bottom: 15px; /* Alt boşluk artırıldı */
     box-shadow: 0 0 15px rgba(52, 152, 219, 0.5); /* Hafif parlama efekti */
+    transition: all 0.3s ease-in-out;
 }
 
 .speaking-indicator span {
@@ -363,6 +366,7 @@ h2 {
     font-weight: bold;
     color: #ecf0f1;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease-in-out;
 }
 
 .users-list {
@@ -441,6 +445,67 @@ h2 {
     line-height: 1.4;
 }
 
+/* Medya mesajları için stiller */
+.chat-message img.media-content,
+.chat-message video.media-content {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-top: 5px;
+    display: block; /* Resim/video alt satıra geçsin */
+}
+
+
+/* Medya Önizleme Alanı */
+.media-preview-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    max-height: 150px; /* Önizleme yüksekliği */
+    overflow: hidden;
+    border-radius: 8px;
+    background-color: #34495e;
+    margin-bottom: 10px;
+    border: 1px solid #555;
+}
+
+.media-preview-container img,
+.media-preview-container video {
+    max-width: 100%;
+    max-height: 150px;
+    object-fit: contain; /* İçeriği çerçeveye sığdır */
+    border-radius: 8px;
+}
+
+.clear-media-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    font-size: 1.2em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1; /* Metni dikeyde ortala */
+    padding: 0;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+.clear-media-button:hover {
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+
 .chat-input-container {
     display: flex;
     gap: 10px;
@@ -450,7 +515,7 @@ h2 {
     flex-shrink: 0; /* İçeriği küçülse bile bu kutunun küçülmesini engelle */
 }
 
-.chat-input-container input {
+.chat-input-container input[type="text"] {
     flex: 1;
     padding: 12px;
     border: 1px solid #555;
@@ -461,11 +526,32 @@ h2 {
     outline: none;
 }
 
-.chat-input-container input:focus {
+.chat-input-container input[type="text"]:focus {
     border-color: #3498db;
 }
 
-.chat-input-container button {
+/* Dosya ekleme butonu */
+.attach-button {
+    background-color: #607d8b; /* Gri tonu */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 15px; /* Daha dar bir buton */
+    font-size: 1.2em; /* Daha büyük ikon */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex; /* İçindeki ikonu ortalamak için */
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0; /* Küçülmesini engelle */
+}
+
+.attach-button:hover {
+    background-color: #546a78;
+}
+
+
+.chat-input-container button#sendButton { /* ID ile seçtik, attach-button ile karışmasın */
     background-color: #27ae60;
     color: white;
     border: none;
@@ -474,9 +560,10 @@ h2 {
     font-size: 1em;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    flex-shrink: 0; /* Küçülmesini engelle */
 }
 
-.chat-input-container button:hover {
+.chat-input-container button#sendButton:hover {
     background-color: #219654;
 }
 
