@@ -24,7 +24,6 @@ body {
     display: flex; /* Varsayılanı flex yapıyoruz, JS ile display: none olacak */
     flex-direction: column;
     align-items: center;
-    /* Ekranın tamamını kaplaması için aşağıdaki satırlar eklendi/güncellendi */
     min-height: 100vh; /* Her ekranın kendi minimum yüksekliği olsun */
     justify-content: center; /* İçeriği dikeyde ortala */
 }
@@ -143,8 +142,6 @@ h2 {
 
 /* Profil Seçim Ekranı */
 .profile-selection {
-    /* justify-content: center; (Zaten üst kapsayıcıda var) */
-    /* align-items: flex-start; (Bu kaldırıldı, flex-start ile alt kart yukarı gelmezdi) */
     padding-top: 50px; /* Üstten biraz boşluk bırak */
     padding-bottom: 50px; /* Alttan da boşluk bırak */
     min-height: 100vh; /* Tam ekran yüksekliğini koru */
