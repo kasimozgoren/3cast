@@ -19,6 +19,12 @@ const speakingUserName = document.getElementById('speakingUserName');
 const speakingUserImage = document.getElementById('speakingUserImage');
 const videosContainer = document.getElementById('videos-container'); // Uzaktan gelen medya için
 
+const mediaFileInput = document.getElementById('mediaFileInput');
+const mediaPreviewContainer = document.getElementById('mediaPreviewContainer');
+const mediaPreviewImage = document.getElementById('mediaPreviewImage');
+const mediaPreviewVideo = document.getElementById('mediaPreviewVideo');
+const clearMediaButton = document.getElementById('clearMediaButton');
+
 // Sabit şifre
 const CORRECT_PASSWORD = '123';
 
@@ -38,6 +44,7 @@ let javascriptNode;
 let speakingTimeout;
 let isMuted = false;
 let currentProfile = {}; // Seçilen profil bilgilerini tutacak
+let selectedMediaFile = null; // Seçilen medya dosyasını tutacak
 
 const socket = io(); // Socket.IO bağlantısını başlat
 
@@ -86,6 +93,7 @@ profileCardsContainer.addEventListener('click', async (event) => {
                 profileSelectionScreen.style.display = 'none';
                 chatRoomScreen.style.display = 'flex';
                 displayWelcomeScreen(currentProfile.name);
+                showSpeakingUser({ name: 'Kimse', image: '' }); // Konuşan kişi alanını başlangıçta "Kimse Konuşmuyor" ile göster
 
                 // Kendi sesimizi de dinlemek isterseniz (genellikle muted olur):
                 // const selfAudio = document.createElement('audio');
@@ -149,12 +157,35 @@ function displayWelcomeScreen(profileName) {
     welcomeMessage.textContent = `Hoş Geldin, ${profileName}!`;
 }
 
-// Sohbet mesajı gönderme
+// Sohbet mesajı veya medya gönderme
 sendButton.addEventListener('click', () => {
     const messageText = chatInput.value.trim();
-    if (messageText) {
+
+    if (messageText || selectedMediaFile) {
         const timestamp = new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
-        socket.emit('chatMessage', { sender: currentProfile.name, message: messageText, timestamp: timestamp });
+        
+        const messageData = {
+            sender: currentProfile.name,
+            timestamp: timestamp,
+            message: messageText || '' // Metin boş olabilir
+        };
+
+        if (selectedMediaFile) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                messageData.media = {
+                    type: selectedMediaFile.type.startsWith('image') ? 'image' : 'video',
+                    data: e.target.result // Base64 encoded veri
+                };
+                socket.emit('chatMessage', messageData);
+                resetMediaInput();
+            };
+            reader.readAsDataURL(selectedMediaFile); // Dosyayı Base64 olarak oku
+        } else {
+            // Sadece metin mesajı
+            socket.emit('chatMessage', messageData);
+        }
+
         chatInput.value = ''; // Mesaj gönderildikten sonra inputu temizle
     }
 });
@@ -165,6 +196,54 @@ chatInput.addEventListener('keypress', (event) => {
         sendButton.click();
     }
 });
+
+// Medya Dosyası Seçme
+mediaFileInput.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        // Maksimum dosya boyutu (örneğin 10MB)
+        const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+        if (file.size > MAX_FILE_SIZE) {
+            alert('Dosya boyutu çok büyük! Maksimum 10MB.');
+            resetMediaInput();
+            return;
+        }
+
+        selectedMediaFile = file;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            mediaPreviewContainer.style.display = 'flex';
+            if (file.type.startsWith('image')) {
+                mediaPreviewImage.src = e.target.result;
+                mediaPreviewImage.style.display = 'block';
+                mediaPreviewVideo.style.display = 'none';
+            } else if (file.type.startsWith('video')) {
+                mediaPreviewVideo.src = e.target.result;
+                mediaPreviewVideo.style.display = 'block';
+                mediaPreviewImage.style.display = 'none';
+            }
+        };
+        reader.readAsDataURL(file);
+    } else {
+        resetMediaInput();
+    }
+});
+
+// Medya Önizlemesini Temizleme
+clearMediaButton.addEventListener('click', () => {
+    resetMediaInput();
+});
+
+function resetMediaInput() {
+    selectedMediaFile = null;
+    mediaFileInput.value = ''; // Inputu sıfırla
+    mediaPreviewContainer.style.display = 'none';
+    mediaPreviewImage.src = '';
+    mediaPreviewVideo.src = '';
+    mediaPreviewVideo.style.display = 'none'; // Video gizli kalsın
+    mediaPreviewImage.style.display = 'none'; // Resim gizli kalsın
+}
+
 
 // Mikrofonu kapatma/açma
 muteButton.addEventListener('click', () => {
@@ -184,7 +263,8 @@ muteButton.addEventListener('click', () => {
             muteButton.textContent = 'Mikrofon Aç';
             muteButton.classList.remove('unmuted');
             socket.emit('userMuted', currentProfile); // Mikrofonun kapatıldığını sunucuya bildir
-            hideSpeakingUser(); // Konuşma göstergesini gizle
+            // Konuşma göstergesini gizle, sadece "Kimse Konuşmuyor" yazsın
+            // showSpeakingUser({ name: 'Kimse', image: '' }); // Bu satırı kaldırdık, çünkü server tarafı bu bilgiyi client'lara gönderecek
         } else {
             muteButton.textContent = 'Mikrofon Kapat';
             muteButton.classList.add('unmuted');
@@ -218,10 +298,11 @@ disconnectButton.addEventListener('click', () => {
     passwordScreen.style.display = 'flex'; // Şifre ekranına geri dön
     chatMessages.innerHTML = ''; // Sohbet mesajlarını temizle
     usersList.innerHTML = ''; // Kullanıcı listesini temizle
-    hideSpeakingUser(); // Konuşan kişiyi sıfırla
+    showSpeakingUser({ name: 'Kimse', image: '' }); // Konuşan kişiyi sıfırla ama görünür kalsın
     isMuted = false; // Mikrofon durumunu sıfırla
     muteButton.textContent = 'Mikrofon Kapat';
     muteButton.classList.add('unmuted');
+    resetMediaInput(); // Medya önizlemesini sıfırla
 });
 
 
@@ -305,19 +386,32 @@ function createPeerConnection(otherUserSocketId) {
 
 // SOCKET.IO OLAY DİNLEYİCİLERİ //
 
-// Sunucudan mesaj geldiğinde
+// Sunucudan mesaj geldiğinde (hem metin hem de medya için)
 socket.on('message', (data) => {
     const messageElement = document.createElement('div');
     messageElement.classList.add('chat-message');
 
-    // Kendi mesajımız mı, başkasının mesajı mı?
     if (data.sender === currentProfile.name) {
         messageElement.classList.add('self');
     } else {
         messageElement.classList.add('other');
     }
 
-    messageElement.innerHTML = `<span class="sender-name">${data.sender} (${data.timestamp})</span><span class="message-text">${data.message}</span>`;
+    let contentHTML = `<span class="sender-name">${data.sender} (${data.timestamp})</span>`;
+    
+    if (data.message) {
+        contentHTML += `<span class="message-text">${data.message}</span>`;
+    }
+
+    if (data.media) {
+        if (data.media.type === 'image') {
+            contentHTML += `<img src="${data.media.data}" class="media-content" alt="Resim">`;
+        } else if (data.media.type === 'video') {
+            contentHTML += `<video src="${data.media.data}" class="media-content" controls></video>`;
+        }
+    }
+
+    messageElement.innerHTML = contentHTML;
     chatMessages.appendChild(messageElement);
     chatMessages.scrollTop = chatMessages.scrollHeight; // En alta kaydır
 });
@@ -423,27 +517,34 @@ socket.on('stoppedSpeaking', () => {
     if (speakingTimeout) {
         clearTimeout(speakingTimeout);
     }
-    speakingTimeout = setTimeout(hideSpeakingUser, 1500); // 1.5 saniye sonra gizle
+    speakingTimeout = setTimeout(() => {
+        showSpeakingUser({ name: 'Kimse', image: '' }); // Süre dolunca "Kimse Konuşmuyor" yap
+    }, 1500); // 1.5 saniye sonra "Kimse Konuşmuyor" yaz
 });
 
-// Konuşan kişiyi gösteren fonksiyon
+
+// Konuşan kişiyi gösteren fonksiyon (her zaman görünür)
 function showSpeakingUser(profile) {
     if (speakingTimeout) {
         clearTimeout(speakingTimeout);
     }
-    speakingUserImage.src = profile.image;
-    speakingUserImage.alt = `${profile.name} Konuşuyor`;
-    speakingUserName.textContent = profile.name + " Konuşuyor...";
-    speakingIndicator.style.display = 'flex'; // Göster
+
+    if (profile && profile.name !== 'Kimse') { // Gerçekten birisi konuşuyorsa
+        speakingUserImage.src = profile.image;
+        speakingUserImage.alt = `${profile.name} Konuşuyor`;
+        speakingUserImage.style.display = 'block'; // Resmi göster
+        speakingUserName.textContent = profile.name + " Konuşuyor...";
+        speakingIndicator.classList.add('speaking-active'); // Konuşma aktif sınıfı (CSS'te belki bir animasyon için)
+    } else { // Kimse konuşmuyorsa veya başlangıç durumu
+        speakingUserImage.src = ''; // Resmin kaynağını boşalt
+        speakingUserImage.alt = '';
+        speakingUserImage.style.display = 'none'; // Resmi gizle
+        speakingUserName.textContent = 'Kimse Konuşmuyor';
+        speakingIndicator.classList.remove('speaking-active');
+    }
+    // speakingIndicator.style.display = 'flex'; // Zaten CSS'te flex, burada eklemeye gerek yok
 }
 
-// Konuşan kişiyi gizleyen fonksiyon
-function hideSpeakingUser() {
-    speakingUserImage.src = ''; // Resmin kaynağını boşalt
-    speakingUserImage.alt = ''; // Alt metni de boşalt
-    speakingUserName.textContent = 'Kimse Konuşmuyor';
-    speakingIndicator.style.display = 'none'; // Divi tamamen gizle
-}
 
 // Sunucu bağlantısı kesildiğinde veya hata oluştuğunda
 socket.on('disconnect', (reason) => {
@@ -471,10 +572,11 @@ socket.on('disconnect', (reason) => {
     }
     chatMessages.innerHTML = '';
     usersList.innerHTML = '';
-    hideSpeakingUser();
+    showSpeakingUser({ name: 'Kimse', image: '' }); // Konuşan kişiyi sıfırla ama görünür kalsın
     isMuted = false;
     muteButton.textContent = 'Mikrofon Kapat';
     muteButton.classList.add('unmuted');
+    resetMediaInput(); // Medya önizlemesini sıfırla
 });
 
 socket.on('connect_error', (error) => {
@@ -482,6 +584,8 @@ socket.on('connect_error', (error) => {
     alert('Sunucuya bağlanılamadı. Lütfen sunucunun çalıştığından emin olun.');
     chatRoomScreen.style.display = 'none';
     passwordScreen.style.display = 'flex';
+    showSpeakingUser({ name: 'Kimse', image: '' }); // Bağlantı hatasında da sıfırla
+    resetMediaInput(); // Medya önizlemesini sıfırla
 });
 
 
@@ -491,5 +595,6 @@ document.addEventListener('DOMContentLoaded', () => {
     passwordScreen.style.display = 'flex';
     profileSelectionScreen.style.display = 'none';
     chatRoomScreen.style.display = 'none';
-    hideSpeakingUser(); // Başlangıçta konuşan kişi alanını gizle
+    showSpeakingUser({ name: 'Kimse', image: '' }); // Başlangıçta konuşan kişi alanını "Kimse Konuşmuyor" ile göster
+    resetMediaInput(); // Medya önizlemesini başlangıçta gizle
 });
