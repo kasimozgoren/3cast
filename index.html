@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voice Chat Uygulaması</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -38,7 +38,9 @@
                 <h3>Mecburietten</h3>
                 <button class="connect-button">Odaya Katıl</button>
             </div>
-             <div class="profile-card" data-profile="misafir"> <img src="images/default_guest.jpg" alt="Misafir"> <h3>Misafir</h3>
+             <div class="profile-card" data-profile="misafir">
+                <img src="images/default_guest.jpg" alt="Misafir">
+                <h3>Misafir</h3>
                 <button class="connect-button">Odaya Katıl</button>
             </div>
         </div>
@@ -69,8 +71,15 @@
                 <h2>Sohbet</h2>
                 <div id="chatMessages" class="chat-messages">
                     </div>
+                <div id="mediaPreviewContainer" class="media-preview-container" style="display: none;">
+                    <img id="mediaPreviewImage" src="" alt="Medya Önizleme">
+                    <video id="mediaPreviewVideo" src="" controls style="display: none;"></video>
+                    <button id="clearMediaButton" class="clear-media-button">&times;</button>
+                </div>
                 <div class="chat-input-container">
                     <input type="text" id="chatInput" placeholder="Mesajınızı yazın...">
+                    <label for="mediaFileInput" class="attach-button" title="Resim veya Video Ekle">📎</label>
+                    <input type="file" id="mediaFileInput" accept="image/*,video/*" style="display: none;">
                     <button id="sendButton">Gönder</button>
                 </div>
             </div>
