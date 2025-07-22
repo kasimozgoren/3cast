@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 });
 
 // Aktif kullanıcıları ve ses akışlarını depolamak için basit bir obje
-const activeUsers = new Map(); // Key: socket.id, Value: { profile: {}, isMuted: false }
+const activeUsers = new Map(); // Key: socket.id, Value: { id: string, profile: {}, isMuted: boolean }
 const speakingUsers = new Map(); // Key: profile.name, Value: Date.now() (son konuşma zamanı)
 
 // Konuşma zaman aşımı (miliseconds)
@@ -41,13 +41,6 @@ io.on('connection', (socket) => {
         io.emit('message', { sender: 'Sistem', message: `${profile.name} odaya katıldı.`, timestamp: timestamp });
     });
 
-    // Ses akışı bilgisi alındığında (şu an kullanılmıyor ama WebRTC için yer tutuyor)
-    socket.on('audioStream', ({ streamId, profile }) => {
-        // Bu olay şu anda sadece kullanıcı listesini güncellemek için kullanılıyor
-        // WebRTC ile gerçek ses akışı burada işlenmez, doğrudan PeerConnection'lar arasında olur.
-        // console.log(`Audio stream bilgisi alındı: ${profile.name} (${streamId})`);
-    });
-
     // Sohbet mesajı alındığında
     socket.on('chatMessage', (data) => {
         // console.log(`Mesaj alındı - ${data.sender}: ${data.message}`);
@@ -63,7 +56,10 @@ io.on('connection', (socket) => {
             const timestamp = new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
             io.emit('message', { sender: 'Sistem', message: `${profile.name} mikrofonunu kapattı.`, timestamp: timestamp });
             speakingUsers.delete(profile.name); // Konuşuyorsa listeden çıkar
-            io.emit('stoppedSpeaking'); // Konuşma durdu bilgisini gönder
+            // Konuşan kimse kalmadıysa 'stoppedSpeaking' gönder
+            if (speakingUsers.size === 0) {
+                io.emit('stoppedSpeaking');
+            }
             console.log(`${profile.name} mikrofonunu kapattı.`);
         }
     });
@@ -90,7 +86,33 @@ io.on('connection', (socket) => {
         }
     });
 
-    // Kullanıcı odadan ayrıldığında veya bağlantısı kesildiğinde
+    // WebRTC sinyalleşme olayları
+    socket.on('webrtc-offer', (data) => {
+        socket.to(data.target).emit('webrtc-offer', {
+            sdp: data.sdp,
+            senderId: socket.id,
+            senderProfile: data.senderProfile // Teklif gönderenin profilini de yolla
+        });
+        // console.log(`Teklif gönderildi: ${socket.id} -> ${data.target}`);
+    });
+
+    socket.on('webrtc-answer', (data) => {
+        socket.to(data.target).emit('webrtc-answer', {
+            sdp: data.sdp,
+            senderId: socket.id,
+        });
+        // console.log(`Cevap gönderildi: ${socket.id} -> ${data.target}`);
+    });
+
+    socket.on('ice-candidate', (data) => {
+        socket.to(data.target).emit('ice-candidate', {
+            candidate: data.candidate,
+            senderId: socket.id,
+        });
+        // console.log(`ICE adayı gönderildi: ${socket.id} -> ${data.target}`);
+    });
+
+    // Kullanıcı odadan ayrıldığında (disconnectRoom olayı veya doğrudan bağlantı kesildiğinde)
     socket.on('disconnectRoom', () => {
         const user = activeUsers.get(socket.id);
         if (user) {
@@ -104,7 +126,11 @@ io.on('connection', (socket) => {
             // Odadan ayrılma mesajı gönder
             const timestamp = new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
             io.emit('message', { sender: 'Sistem', message: `${user.profile.name} odadan ayrıldı.`, timestamp: timestamp });
-            io.emit('stoppedSpeaking'); // Konuşma durdu bilgisini gönder
+            
+            // Eğer kimse konuşmuyorsa 'stoppedSpeaking' gönder
+            if (speakingUsers.size === 0) {
+                io.emit('stoppedSpeaking');
+            }
         }
     });
 
@@ -121,7 +147,11 @@ io.on('connection', (socket) => {
             // Odadan ayrılma mesajı gönder
             const timestamp = new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
             io.emit('message', { sender: 'Sistem', message: `${user.profile.name} bağlantısı kesildi.`, timestamp: timestamp });
-            io.emit('stoppedSpeaking'); // Konuşma durdu bilgisini gönder
+            
+            // Eğer kimse konuşmuyorsa 'stoppedSpeaking' gönder
+            if (speakingUsers.size === 0) {
+                io.emit('stoppedSpeaking');
+            }
         } else {
             console.log(`Bilinmeyen kullanıcı (${socket.id}) bağlantısı kesildi. Sebep: ${reason}`);
             // Belki hiç profili seçmeden bağlantısı kesilmiştir
@@ -137,6 +167,7 @@ setInterval(() => {
     const now = Date.now();
     let shouldEmitStoppedSpeaking = false;
 
+    // Süresi dolmuş konuşan kullanıcıları temizle
     for (const [profileName, lastSpeakingTime] of speakingUsers.entries()) {
         if (now - lastSpeakingTime > SPEAKING_TIMEOUT_MS) {
             speakingUsers.delete(profileName);
@@ -145,6 +176,7 @@ setInterval(() => {
         }
     }
 
+    // Eğer kimse konuşmuyorsa ve daha önce konuşan vardıysa bildir
     if (shouldEmitStoppedSpeaking && speakingUsers.size === 0) {
         io.emit('stoppedSpeaking'); // Hiç kimse konuşmuyorsa bildirim gönder
     }
