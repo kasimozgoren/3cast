@@ -216,7 +216,7 @@ h2 {
     background-color: #27ae60; /* Yeşil düğme */
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 8iki;
     padding: 10px 20px;
     font-size: 1em;
     cursor: pointer;
@@ -335,7 +335,7 @@ h2 {
 }
 
 .speaking-indicator {
-    display: flex;
+    display: none; /* Varsayılan olarak gizli olsun */
     align-items: center;
     justify-content: center; /* Ortala */
     flex-direction: column; /* Alt alta sırala */
