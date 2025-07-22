@@ -20,7 +20,7 @@ const speakingUserImage = document.getElementById('speakingUserImage');
 const videosContainer = document.getElementById('videos-container'); // Gizli videolar için
 
 // Sabit şifre
-const CORRECT_PASSWORD = '123'; // Bu şifreyi kendi istediğinizle değiştirin
+const CORRECT_PASSWORD = '3castgizlisifresibromen'; // Bu şifreyi kendi istediğinizle değiştirin
 
 // Kullanıcı profilleri tanımları
 const profiles = {
