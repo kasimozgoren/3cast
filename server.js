@@ -41,9 +41,10 @@ io.on('connection', (socket) => {
         io.emit('message', { sender: 'Sistem', message: `${profile.name} odaya katıldı.`, timestamp: timestamp });
     });
 
-    // Sohbet mesajı alındığında
+    // Sohbet mesajı veya medya alındığında
     socket.on('chatMessage', (data) => {
-        // console.log(`Mesaj alındı - ${data.sender}: ${data.message}`);
+        // data objesi artık hem message hem de media (opsiyonel) içerebilir
+        // console.log(`Mesaj alındı - ${data.sender}: ${data.message || '[Medya Mesajı]'}`);
         io.emit('message', data); // Tüm bağlı client'lara mesajı geri gönder
     });
 
@@ -56,7 +57,7 @@ io.on('connection', (socket) => {
             const timestamp = new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
             io.emit('message', { sender: 'Sistem', message: `${profile.name} mikrofonunu kapattı.`, timestamp: timestamp });
             speakingUsers.delete(profile.name); // Konuşuyorsa listeden çıkar
-            // Konuşan kimse kalmadıysa 'stoppedSpeaking' gönder
+            // Eğer kimse konuşmuyorsa 'stoppedSpeaking' gönder
             if (speakingUsers.size === 0) {
                 io.emit('stoppedSpeaking');
             }
