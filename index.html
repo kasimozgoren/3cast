@@ -5,59 +5,74 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3cast - Sesli Sohbet</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
-</head>
+    <link rel="icon" href="/images/favicon.ico"> </head>
 <body>
 
     <div class="password-screen" id="passwordScreen">
         <div class="password-card">
-            <img src="images/logo.jpg" alt="3cast Logo" class="auth-logo">
-            <h2>Hoş Geldiniz</h2>
-            <input type="password" id="passwordInput" placeholder="Şifre Girin">
-            <button id="passwordSubmitButton">Giriş Yap</button>
-            <p class="error-message" id="passwordErrorMessage"></p>
+            <img src="images/3cast-logo-full.png" alt="3cast Logo" class="auth-logo">
+            <h2>Giriş Yap</h2>
+            <input type="password" id="passwordInput" placeholder="Şifreyi Gir">
+            <button id="passwordSubmitButton">Giriş</button>
+            <p id="passwordErrorMessage" class="error-message" style="display: none;">Yanlış şifre. Lütfen tekrar deneyin.</p>
         </div>
     </div>
 
     <div class="profile-selection" id="profileSelectionScreen" style="display: none;">
-        <img src="images/logo.jpg" alt="3cast Logo" class="auth-logo top-logo">
+        <img src="images/3cast-logo-full.png" alt="3cast Logo" class="auth-logo">
         <h1>Bir Profil Seç</h1>
-        <div class="profile-cards" id="profileCards">
+        <div class="profile-cards">
+            <div class="profile-card" data-profile="stannis">
+                <img src="images/stannis.jpg" alt="Stannis Profil Resmi">
+                <h3>Stannis</h3>
+                <button class="connect-button">Odaya Bağlan</button>
             </div>
+            <div class="profile-card" data-profile="hope"> <img src="images/vion.jpg" alt="Vion Profil Resmi">
+                <h3>Vion</h3>
+                <button class="connect-button">Odaya Bağlan</button>
+            </div>
+            <div class="profile-card" data-profile="mecburietten">
+                <img src="images/mecburietten.jpg" alt="Mecburietten Profil Resmi">
+                <h3>Mecburietten</h3>
+                <button class="connect-button">Odaya Bağlan</button>
+            </div>
+            <div class="profile-card" data-profile="guest">
+                <img src="images/default_guest.jpg" alt="Misafir Profil Resmi">
+                <h3>Misafir</h3>
+                <button class="connect-button">Odaya Bağlan</button>
+            </div>
+        </div>
     </div>
 
     <div class="chat-room" id="chatRoomScreen" style="display: none;">
-        <header class="header">
+        <div class="header">
             <div class="logo-and-welcome">
-                <img src="images/logo.jpg" alt="3cast Logo" class="app-logo">
-                <h1>Hoş Geldin, <span id="welcomeUserName"></span>!</h1>
+                <img src="images/3cast-logo.png" alt="3cast Logo" class="app-logo">
+                <h1 id="welcomeMessage"></h1>
             </div>
             <div class="action-buttons">
-                <button id="toggleMuteButton" class="unmuted">Mikrofon Kapat</button>
-                <button id="leaveRoomButton" class="disconnect">Odadan Ayrıl</button>
+                <button id="muteButton" class="unmuted">Mikrofon Kapat</button>
+                <button id="disconnectButton" class="disconnect">Odadan Ayrıl</button>
             </div>
-        </header>
-
+        </div>
         <div class="main-content">
             <div class="left-panel">
                 <h2>Konuşan Kişi</h2>
-                <div class="speaking-indicator">
-                    <img id="speakingProfilePic" src="images/default.jpg" alt="Konuşan Kişi">
+                <div class="speaking-indicator" id="speakingIndicator">
+                    <img src="images/default_guest.jpg" alt="Konuşan Kişi" id="speakingUserImage">
                     <span id="speakingUserName">Kimse Konuşmuyor</span>
                 </div>
-
                 <h2>Odada Bulunanlar</h2>
                 <div class="users-list" id="usersList">
                     </div>
             </div>
-
             <div class="right-panel">
                 <h2>Sohbet</h2>
-                <div class="chat-messages" id="chatMessagesDiv">
+                <div class="chat-messages" id="chatMessages">
                     </div>
                 <div class="chat-input-container">
                     <input type="text" id="chatInput" placeholder="Mesajınızı Yazın...">
-                    <button id="sendMessageButton">Gönder</button>
+                    <button id="sendButton">Gönder</button>
                 </div>
             </div>
         </div>
