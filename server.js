@@ -144,7 +144,7 @@ io.on('connection', (socket) => {
             console.log('Güncel kullanıcılar gönderildi:', Array.from(activeUsers.values()).map(u => u.profile.name));
 
             const timestamp = new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
-            io.emit('message', { sender: 'Sistem', message: `${user.profile.name} bağlantısı kesildi.`, timestamp: timestamp });
+            io.emit('message', { sender: 'Sistem', message: `Bilinmeyen Kullanıcı odadan ayrıldı.`, timestamp: timestamp });
             
             if (speakingUsers.size === 0) {
                 io.emit('stoppedSpeaking');
